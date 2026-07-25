@@ -144,38 +144,22 @@
       </div>
     </section>
 
-    <!-- MAIN CONTENT AREA (Tabbed Interface) -->
-    <main>
-      <!-- Navigation Tabs -->
-      <div class="tabs-header">
-        <button class="tab-btn active" data-tab="tab-ledger">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
-          </svg>
-          Active Clients & Udhar Ledger
-          <span class="tab-count-badge" id="client-count-badge">8</span>
-        </button>
+    <!-- UNIFIED SINGLE-PAGE DASHBOARD (Card Views on One Screen, Computer & Mobile) -->
+    <main class="dashboard-unified-layout">
 
-        <button class="tab-btn" data-tab="tab-whatsapp">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
-          </svg>
-          WhatsApp Automation & Templates
-        </button>
+      <!-- SECTION 1: Active Clients & Udhar Ledger (CARD VIEW FOR COMPUTER & MOBILE) -->
+      <section class="dashboard-section card-section-ledger">
+        <div class="section-title-wrapper">
+          <h2 class="card-heading">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--whatsapp-green)"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+            Active Clients & Udhar Ledger (Card View)
+            <span class="tab-count-badge" id="client-count-badge">8</span>
+          </h2>
+        </div>
 
-        <button class="tab-btn" data-tab="tab-entry">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
-          </svg>
-          Quick Entry / Payment Log
-        </button>
-      </div>
-
-      <!-- TAB A: Active Clients & Udhar Ledger -->
-      <section id="tab-ledger" class="tab-pane active">
-        <!-- Controls & Filters Bar -->
-        <div class="controls-bar">
-          <div class="filter-chips-group" id="category-filter-chips">
+        <!-- Controls & Category Filters (Wrap layout, NO SCROLL) -->
+        <div class="controls-bar-wrap">
+          <div class="filter-chips-wrap" id="category-filter-chips">
             <button class="chip-btn active" data-category="all">All Categories</button>
             <button class="chip-btn" data-category="Milk">🥛 Milk Supplier</button>
             <button class="chip-btn" data-category="Grocery">🛒 Grocery Shop</button>
@@ -193,45 +177,23 @@
           </div>
         </div>
 
-        <!-- Desktop Ledger Table (Shown on Laptop/Desktop >= 768px) -->
-        <div class="table-container desktop-only-table">
-          <table class="ledger-table">
-            <thead>
-              <tr>
-                <th>Client Name & Phone</th>
-                <th>Category</th>
-                <th>Outstanding Due</th>
-                <th>Billing Cycle</th>
-                <th>Last WhatsApp Sent</th>
-                <th>Auto-Send Switch</th>
-                <th style="text-align: right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ledger-table-body">
-              <!-- Dynamically populated via JS -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Mobile Client Cards Container (Shown on Mobile < 768px) -->
-        <div id="mobile-client-cards-container" class="mobile-client-cards-container">
-          <!-- Dynamically populated via JS for mobile screens -->
+        <!-- Unified Client Cards Grid (Used for BOTH Computer & Mobile modes, NO TABLE) -->
+        <div id="client-cards-grid" class="client-cards-grid">
+          <!-- Dynamically populated via JS -->
         </div>
       </section>
 
-      <!-- TAB B: WhatsApp Automation Setup & Templates -->
-      <section id="tab-whatsapp" class="tab-pane">
-        <div class="automation-grid">
-          
-          <!-- Template Configuration Side -->
+      <!-- TWO-COLUMN DASHBOARD SECTION: WhatsApp Automation & Quick Entry -->
+      <div class="dashboard-bottom-grid">
+        
+        <!-- SECTION 2: WhatsApp Automation Setup & Message Templates -->
+        <section class="dashboard-section card-section-whatsapp">
           <div class="config-card">
             <h2 class="card-heading">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--whatsapp-green)">
-                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-              </svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--whatsapp-green)"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
               WhatsApp Message Template Engine
             </h2>
-            <p class="card-subheading">Customize reminder templates with dynamic customer variables. Messages are dispatched automatically via WhatsApp Cloud API.</p>
+            <p class="card-subheading">Customize reminder templates with dynamic customer variables.</p>
 
             <div class="form-group" style="margin-bottom: 1.25rem;">
               <label class="form-label">Select Template Preset</label>
@@ -244,10 +206,10 @@
               </select>
             </div>
 
-            <!-- Dynamic Variable Insertion Chips -->
+            <!-- Dynamic Variable Insertion Chips (No scroll, flex wrap) -->
             <div class="variables-section">
               <span class="variables-label">Click chip to insert dynamic tag:</span>
-              <div class="var-chips-wrapper">
+              <div class="var-chips-wrap">
                 <button class="var-chip" data-var="{Client_Name}">{Client_Name}</button>
                 <button class="var-chip" data-var="{Amount}">{Amount}</button>
                 <button class="var-chip" data-var="{UPI_ID}">{UPI_ID}</button>
@@ -289,19 +251,19 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 1rem;">
-              <button class="btn btn-primary" id="save-template-btn">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" id="save-template-btn" style="flex: 1;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                 Save Template & Apply
               </button>
-              <button class="btn btn-indigo" id="test-dispatch-btn">
+              <button class="btn btn-indigo" id="test-dispatch-btn" style="flex: 1;">
                 📱 Send Test WhatsApp Message
               </button>
             </div>
           </div>
 
           <!-- Live WhatsApp Mobile Phone Mockup -->
-          <div class="phone-mockup-wrapper">
+          <div class="phone-mockup-wrapper" style="margin-top: 1.25rem;">
             <div class="phone-screen">
               <div class="wa-header">
                 <div class="wa-avatar" id="wa-mockup-avatar">UP</div>
@@ -325,24 +287,18 @@
               </div>
             </div>
           </div>
+        </section>
 
-        </div>
-      </section>
-
-      <!-- TAB C: Quick Payment Entry / Log -->
-      <section id="tab-entry" class="tab-pane">
-        <div class="quick-entry-grid">
-          
-          <!-- Entry Form -->
-          <div class="config-card">
+        <!-- SECTION 3: Quick Payment Entry / Log -->
+        <section class="dashboard-section card-section-entry">
+          <div class="config-card" style="margin-bottom: 1.25rem;">
             <h2 class="card-heading">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--indigo-primary)"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
               Add Ledger Entry / Payment
             </h2>
-            <p class="card-subheading">Quickly record a new credit debt (Udhar) or payment collected for any merchant client.</p>
+            <p class="card-subheading">Quickly record a new credit debt (Udhar) or payment collected.</p>
 
             <form id="quick-entry-form">
-              <!-- Type Toggle: Udhar (Debit) vs Payment (Credit) -->
               <div class="transaction-type-selector">
                 <button type="button" class="type-btn type-debit active" id="btn-type-debit" data-type="debit">
                   ➕ Add Udhar (+ Debt)
@@ -354,9 +310,7 @@
 
               <div class="form-group" style="margin-bottom: 1rem;">
                 <label class="form-label">Select Client</label>
-                <select class="form-input" id="entry-client-select" required>
-                  <!-- Populated dynamically -->
-                </select>
+                <select class="form-input" id="entry-client-select" required></select>
               </div>
 
               <div class="form-grid" style="margin-bottom: 1rem;">
@@ -373,7 +327,7 @@
 
               <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label class="form-label">Notes / Service Details</label>
-                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. 2L Daily Milk packet for July, or July Tuition Fee">
+                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. 2L Daily Milk packet for July">
               </div>
 
               <button type="submit" class="btn btn-indigo" style="width: 100%;">
@@ -382,18 +336,16 @@
             </form>
           </div>
 
-          <!-- Transaction History Log -->
           <div class="history-card">
             <h3 class="card-heading" style="margin-bottom: 1.25rem;">
               📜 Recent Transaction History
             </h3>
-            <div id="transaction-history-list">
-              <!-- Dynamically populated -->
-            </div>
+            <div id="transaction-history-list"></div>
           </div>
+        </section>
 
-        </div>
-      </section>
+      </div>
+
     </main>
 
     <!-- FOOTER & TRUST BADGES -->

@@ -1,6 +1,6 @@
 /* ==========================================================================
    UdharPayInd - Automated Billing & WhatsApp Reminder Platform
-   Application Logic, Mobile Client Cards Engine
+   Application Logic, Unified Card View Engine (Computer & Mobile)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -196,13 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 2. DOM Elements
   // ==========================================
-  const ledgerTableBody = document.getElementById('ledger-table-body');
-  const mobileClientCardsContainer = document.getElementById('mobile-client-cards-container');
+  const clientCardsGrid = document.getElementById('client-cards-grid');
   const globalSearchInput = document.getElementById('global-search');
   const categoryChips = document.querySelectorAll('#category-filter-chips .chip-btn');
   const statusSelectFilter = document.getElementById('status-select-filter');
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const tabPanes = document.querySelectorAll('.tab-pane');
 
   // Header Elements & Animated User Logo
   const headerUserBadge = document.getElementById('header-user-badge');
@@ -415,11 +412,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 5. Render Active Clients Ledger (DESKTOP TABLE + MOBILE CARD VIEW)
+  // 5. Render Active Clients CARD VIEW (Used for BOTH Computer & Mobile Mode - No Table!)
   // ==========================================
   function renderLedgerTable() {
-    ledgerTableBody.innerHTML = '';
-    mobileClientCardsContainer.innerHTML = '';
+    clientCardsGrid.innerHTML = '';
 
     const filteredClients = state.clients.filter(client => {
       if (state.activeCategoryFilter !== 'all' && client.category !== state.activeCategoryFilter) return false;
@@ -437,67 +433,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (filteredClients.length === 0) {
-      const emptyStateHtml = `
-        <div style="text-align: center; padding: 2.5rem; color: var(--text-muted); width: 100%;">
+      clientCardsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
           🔍 No clients found matching the selected filter or search query.
         </div>
       `;
-      ledgerTableBody.innerHTML = `<tr><td colspan="7">${emptyStateHtml}</td></tr>`;
-      mobileClientCardsContainer.innerHTML = emptyStateHtml;
       return;
     }
 
     filteredClients.forEach(client => {
       const amountClass = client.amountDue > 5000 ? 'amount-high' : client.amountDue > 0 ? 'amount-medium' : 'amount-zero';
 
-      // 1. DESKTOP TABLE ROW
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>
-          <div class="client-info-cell">
-            <div class="avatar ${getCategoryAvatarClass(client.category)}">
-              ${client.name.charAt(0)}
-            </div>
-            <div class="client-details">
-              <div class="client-name">${client.name}</div>
-              <div class="client-phone">${client.phone}</div>
-            </div>
-          </div>
-        </td>
-        <td>
-          <span class="category-badge">${getCategoryIcon(client.category)}</span>
-        </td>
-        <td>
-          <span class="due-amount-cell ${amountClass}">${formatCurrency(client.amountDue)}</span>
-        </td>
-        <td>
-          <span style="font-size: 0.85rem; color: var(--text-secondary);">${client.billingFrequency}</span>
-        </td>
-        <td>
-          <span style="font-size: 0.82rem; color: var(--text-muted);">${client.lastReminder}</span>
-        </td>
-        <td>
-          <label class="toggle-switch" title="Toggle Automated WhatsApp Billing Reminders">
-            <input type="checkbox" class="auto-send-toggle" data-id="${client.id}" ${client.autoSend ? 'checked' : ''}>
-            <span class="slider"></span>
-          </label>
-        </td>
-        <td style="text-align: right;">
-          <div class="action-buttons" style="justify-content: flex-end;">
-            <button class="btn wa-send-btn trigger-wa-btn" data-id="${client.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 1.77.46 3.45 1.28 4.93L2 22l5.23-1.23A9.97 9.97 0 0 0 12 22a10 10 0 0 0 10-10A10 10 0 0 0 12 2z"/></svg>
-              Send Remind
-            </button>
-            <button class="btn settle-btn trigger-settle-btn" data-id="${client.id}">💚 Settle</button>
-            <button class="btn delete-btn trigger-delete-btn" data-id="${client.id}">🗑️ Remove</button>
-          </div>
-        </td>
-      `;
-      ledgerTableBody.appendChild(tr);
-
-      // 2. MOBILE CLIENT CARD (Replaces table on smartphones)
+      // UNIFIED CLIENT CARD (COMPUTER & MOBILE)
       const card = document.createElement('div');
-      card.className = 'client-card-mobile';
+      card.className = 'client-card-item';
       card.innerHTML = `
         <div class="client-card-top">
           <div class="client-info-cell">
@@ -536,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <div class="client-card-actions-mobile">
+        <div class="client-card-actions">
           <button class="btn wa-send-btn trigger-wa-btn" data-id="${client.id}" style="flex: 1;">
             📱 Send Remind
           </button>
@@ -548,10 +497,10 @@ document.addEventListener('DOMContentLoaded', () => {
           </button>
         </div>
       `;
-      mobileClientCardsContainer.appendChild(card);
+      clientCardsGrid.appendChild(card);
     });
 
-    // Attach Event Listeners to both Table & Card Buttons
+    // Attach Event Listeners to Card Buttons
     document.querySelectorAll('.auto-send-toggle').forEach(checkbox => {
       checkbox.addEventListener('change', (e) => {
         const id = e.target.getAttribute('data-id');
@@ -561,7 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
           saveClientsDB(); // PERSIST
           showToast(`WhatsApp Auto-Send ${client.autoSend ? 'Enabled' : 'Paused'} for ${client.name}`, client.autoSend ? 'success' : 'info');
           updateMetrics();
-          renderLedgerTable(); // SYNC BOTH VIEWS
         }
       });
     });
@@ -968,16 +916,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTransactionHistory();
 
     showToast(`Collected ₹${settleAmt} from ${client.name}! Saved to database.`, 'success');
-  });
-
-  // Tab & Filters
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.classList.remove('active'));
-      tabPanes.forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
-    });
   });
 
   categoryChips.forEach(chip => {

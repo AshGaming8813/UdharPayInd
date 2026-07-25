@@ -496,81 +496,24 @@ body {
 .trend-alert { background: var(--rose-light-bg); color: var(--rose-danger); }
 
 /* ==========================================================================
-   Tabbed Main Content Area
+   UNIFIED DASHBOARD LAYOUT (All 3 Sections in Card View on One Screen)
    ========================================================================== */
-.tabs-header {
+.dashboard-unified-layout {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 1.5rem;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  -webkit-overflow-scrolling: touch;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
-.tab-btn {
-  padding: 0.85rem 1.4rem;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  white-space: nowrap;
+.dashboard-section {
+  width: 100%;
 }
 
-.tab-btn:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+.section-title-wrapper {
+  margin-bottom: 1rem;
 }
 
-.tab-btn.active {
-  color: var(--whatsapp-green);
-  border-bottom-color: var(--whatsapp-green);
-  background: var(--whatsapp-light-bg);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.tab-count-badge {
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
-}
-
-.tab-btn.active .tab-count-badge {
-  background: var(--whatsapp-green);
-  color: #0b0f19;
-}
-
-.tab-pane {
-  display: none;
-  animation: fadeIn 0.3s ease;
-}
-
-.tab-pane.active {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================================================================
-   Tab A: Active Clients & Ledger
-   ========================================================================== */
-.controls-bar {
+/* Controls Bar & Category Filter Chips (Wrap Layout, NO SCROLLBAR) */
+.controls-bar-wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -583,11 +526,12 @@ body {
   border: 1px solid var(--border-color);
 }
 
-.filter-chips-group {
+.filter-chips-wrap {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* NO HORIZONTAL SCROLL! Chips wrap cleanly on all screens */
+  overflow: visible;
 }
 
 .chip-btn {
@@ -637,60 +581,43 @@ body {
   cursor: pointer;
 }
 
-/* Desktop Ledger Table Container (>= 768px) */
-.desktop-only-table {
-  display: block;
+/* ==========================================================================
+   UNIFIED CLIENT CARDS GRID (Used for Computer & Mobile Modes - Table Removed!)
+   ========================================================================== */
+.client-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
 }
 
-.table-container {
+.client-card-item {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
   box-shadow: var(--shadow-md);
-  width: 100%;
-}
-
-.ledger-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.9rem;
-}
-
-.ledger-table th {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1rem 1.25rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--border-color);
-  white-space: nowrap;
-}
-
-[data-theme="light"] .ledger-table th {
-  background: #f8fafc;
-}
-
-.ledger-table td {
-  padding: 1.1rem 1.25rem;
-  border-bottom: 1px solid var(--border-color);
-  vertical-align: middle;
-}
-
-.ledger-table tbody tr {
   transition: var(--transition);
+  position: relative;
 }
 
-.ledger-table tbody tr:hover {
-  background: var(--bg-card-hover);
+.client-card-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Client Avatar Cell */
+.client-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .client-info-cell {
   display: flex;
   align-items: center;
@@ -698,14 +625,14 @@ body {
 }
 
 .avatar {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 800;
+  font-size: 1.1rem;
   color: #ffffff;
   flex-shrink: 0;
 }
@@ -718,15 +645,14 @@ body {
 .client-details .client-name {
   font-weight: 700;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
 }
 
 .client-details .client-phone {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 
-/* Category Badge */
 .category-badge {
   display: inline-flex;
   align-items: center;
@@ -740,15 +666,43 @@ body {
   white-space: nowrap;
 }
 
-/* Due Amount Cell */
+.client-card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  background: var(--bg-input);
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.card-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.card-meta-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
 .due-amount-cell {
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 .amount-high { color: var(--rose-danger); }
 .amount-medium { color: var(--amber-warning); }
 .amount-zero { color: var(--emerald-success); }
+
+.card-meta-val {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
 
 /* Switch Toggle */
 .toggle-switch {
@@ -793,19 +747,19 @@ input:checked + .slider:before {
   transform: translateX(20px);
 }
 
-/* Table Actions */
-.action-buttons {
+.client-card-actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-  white-space: nowrap;
+  padding-top: 0.25rem;
 }
 
 .wa-send-btn {
   background: var(--whatsapp-light-bg);
   color: var(--whatsapp-green);
   border: 1px solid rgba(37, 211, 102, 0.3);
-  padding: 0.45rem 0.85rem;
+  padding: 0.55rem 0.95rem;
   font-size: 0.82rem;
 }
 
@@ -819,7 +773,7 @@ input:checked + .slider:before {
   background: var(--emerald-light-bg);
   color: var(--emerald-success);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 0.45rem 0.85rem;
+  padding: 0.55rem 0.95rem;
   font-size: 0.82rem;
 }
 
@@ -832,7 +786,7 @@ input:checked + .slider:before {
   background: var(--rose-light-bg);
   color: var(--rose-danger);
   border: 1px solid rgba(244, 63, 94, 0.3);
-  padding: 0.45rem 0.75rem;
+  padding: 0.55rem 0.85rem;
   font-size: 0.82rem;
 }
 
@@ -842,84 +796,22 @@ input:checked + .slider:before {
 }
 
 /* ==========================================================================
-   Mobile Client Cards Layout (< 768px)
+   DASHBOARD BOTTOM GRID: WhatsApp Automation & Quick Entry Log Side-by-Side
    ========================================================================== */
-.mobile-client-cards-container {
-  display: none; /* Hidden by default on desktop */
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.client-card-mobile {
-  background: var(--bg-card);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-shadow: var(--shadow-md);
-  transition: var(--transition);
-}
-
-.client-card-mobile:hover {
-  border-color: var(--border-color-hover);
-}
-
-.client-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.client-card-meta {
+.dashboard-bottom-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-  background: var(--bg-input);
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  gap: 1.75rem;
+  align-items: start;
 }
 
-.card-meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+@media (max-width: 1024px) {
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.card-meta-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-
-.card-meta-val {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.client-card-actions-mobile {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding-top: 0.25rem;
-}
-
-/* ==========================================================================
-   Tab B: WhatsApp Automation Setup & Live Preview
-   ========================================================================== */
-.automation-grid {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 1.5rem;
-}
-
+/* Tab B: WhatsApp Automation Config Card */
 .config-card {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
@@ -944,7 +836,6 @@ input:checked + .slider:before {
   margin-bottom: 1.5rem;
 }
 
-/* Dynamic Variable Chips */
 .variables-section {
   margin-bottom: 1.5rem;
 }
@@ -957,10 +848,11 @@ input:checked + .slider:before {
   margin-bottom: 0.6rem;
 }
 
-.var-chips-wrapper {
+.var-chips-wrap {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  overflow: visible;
 }
 
 .var-chip {
@@ -983,7 +875,7 @@ input:checked + .slider:before {
 
 .template-textarea {
   width: 100%;
-  min-height: 160px;
+  min-height: 140px;
   padding: 1rem;
   background: var(--bg-input);
   border: 1px solid var(--border-color);
@@ -1003,7 +895,6 @@ input:checked + .slider:before {
   box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
 }
 
-/* Scrollable & Editable Message Textarea inside WhatsApp Dispatch Modal */
 .wa-message-editor-scrollable {
   width: 100%;
   min-height: 140px;
@@ -1028,7 +919,6 @@ input:checked + .slider:before {
   box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.25);
 }
 
-/* WhatsApp Phone Preview Widget */
 .phone-mockup-wrapper {
   background: #0e1621;
   border-radius: 32px;
@@ -1047,7 +937,7 @@ input:checked + .slider:before {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 520px;
+  height: 420px;
 }
 
 .wa-header {
@@ -1124,7 +1014,6 @@ input:checked + .slider:before {
   height: 14px;
 }
 
-/* Recurrence Rule Controls */
 .recurrence-box {
   background: var(--bg-input);
   border: 1px solid var(--border-color);
@@ -1135,7 +1024,7 @@ input:checked + .slider:before {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
 }
 
@@ -1168,15 +1057,7 @@ input:checked + .slider:before {
   border-color: var(--indigo-primary);
 }
 
-/* ==========================================================================
-   Tab C: Quick Ledger Entry Form
-   ========================================================================== */
-.quick-entry-grid {
-  display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 1.5rem;
-}
-
+/* Tab C: Quick Entry & History */
 .transaction-type-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1210,7 +1091,6 @@ input:checked + .slider:before {
   border-color: var(--emerald-success);
 }
 
-/* Transaction History Table */
 .history-card {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
@@ -1287,7 +1167,6 @@ input:checked + .slider:before {
   scrollbar-color: var(--whatsapp-green) rgba(0, 0, 0, 0.2);
 }
 
-/* Custom smooth scrollbar for all modal cards (top-to-bottom & vice versa) */
 .modal-card::-webkit-scrollbar {
   width: 6px;
 }
@@ -1406,7 +1285,6 @@ input:checked + .slider:before {
   border: 1px solid var(--border-color);
 }
 
-/* Developer Credit Logo Badge (AD Group of Technology) */
 .developer-logo-badge {
   display: inline-flex;
   align-items: center;
@@ -1444,10 +1322,9 @@ input:checked + .slider:before {
 }
 
 /* ==========================================================================
-   RESPONSIVE DESIGN ENGINE (Mobile Phones, Tablets, Laptops, 4K Screens)
+   RESPONSIVE ENGINE FOR MOBILE PHONES (< 768px & < 420px)
    ========================================================================== */
 
-/* Laptop & Tablet Screens (< 1024px) */
 @media (max-width: 1024px) {
   .app-container {
     padding: 1rem 1rem 2.5rem 1rem;
@@ -1471,31 +1348,15 @@ input:checked + .slider:before {
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
-  .automation-grid, .quick-entry-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .phone-mockup-wrapper {
-    max-width: 380px;
-    margin: 0 auto;
-  }
 }
 
-/* Smartphone Mobile Screens (< 768px): HIDE TABLE & SHOW CARD VIEW */
 @media (max-width: 768px) {
   .app-container {
     padding: 0.6rem 0.6rem 2rem 0.6rem;
   }
 
-  /* REMOVE TABLE LAYOUT ON MOBILE SCREEN */
-  .desktop-only-table {
-    display: none !important;
-  }
-
-  /* SHOW CLIENT CARDS CONTAINER ON MOBILE SCREEN */
-  .mobile-client-cards-container {
-    display: flex !important;
+  .client-cards-grid {
+    grid-template-columns: 1fr;
   }
 
   .header {
@@ -1566,28 +1427,10 @@ input:checked + .slider:before {
     font-size: 0.72rem;
   }
 
-  .metric-icon-box {
-    width: 32px;
-    height: 32px;
-  }
-
-  .metric-icon-box svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .controls-bar {
+  .controls-bar-wrap {
     padding: 0.75rem;
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .filter-chips-group {
-    overflow-x: auto;
-    padding-bottom: 0.4rem;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
   }
 
   .secondary-filters {
@@ -1596,85 +1439,6 @@ input:checked + .slider:before {
 
   .custom-select {
     width: 100%;
-  }
-
-  /* Smartphone Mobile Optimization for Tab B (WhatsApp Automation & Templates) */
-  .automation-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-
-  .config-card {
-    padding: 1.1rem;
-    border-radius: var(--radius-md);
-  }
-
-  .card-heading {
-    font-size: 1.05rem;
-  }
-
-  .var-chips-wrapper {
-    gap: 0.4rem;
-  }
-
-  .var-chip {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.76rem;
-  }
-
-  .template-textarea {
-    min-height: 130px;
-    padding: 0.85rem;
-    font-size: 0.88rem;
-    margin-bottom: 1rem;
-  }
-
-  .recurrence-box {
-    padding: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  /* Make Save & Test Buttons Stack Cleanly on Mobile */
-  .config-card > div[style*="display: flex; gap: 1rem;"] {
-    flex-direction: column !important;
-    gap: 0.75rem !important;
-  }
-
-  .config-card > div[style*="display: flex; gap: 1rem;"] .btn {
-    width: 100% !important;
-  }
-
-  /* Mobile Live Phone Mockup Screen Fit */
-  .phone-mockup-wrapper {
-    max-width: 100%;
-    border-radius: 20px;
-    padding: 8px;
-    margin: 0;
-  }
-
-  .phone-screen {
-    height: 380px;
-    border-radius: 16px;
-  }
-
-  .wa-header {
-    padding: 0.65rem 0.85rem;
-  }
-
-  .wa-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
-  }
-
-  .wa-title-name {
-    font-size: 0.82rem;
-  }
-
-  .wa-chat-bubble {
-    padding: 0.75rem;
-    font-size: 0.82rem;
-    max-width: 95%;
   }
 
   .footer {
@@ -1701,7 +1465,6 @@ input:checked + .slider:before {
   }
 }
 
-/* Extra Small Phones (< 420px) */
 @media (max-width: 420px) {
   .metrics-grid {
     grid-template-columns: 1fr;
@@ -1716,12 +1479,12 @@ input:checked + .slider:before {
     width: 100%;
   }
 
-  .client-card-actions-mobile {
+  .client-card-actions {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .client-card-actions-mobile .btn {
+  .client-card-actions .btn {
     width: 100%;
   }
 }
