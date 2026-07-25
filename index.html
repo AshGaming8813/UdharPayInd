@@ -193,8 +193,8 @@
           </div>
         </div>
 
-        <!-- Ledger Table -->
-        <div class="table-container">
+        <!-- Desktop Ledger Table (Shown on Laptop/Desktop >= 768px) -->
+        <div class="table-container desktop-only-table">
           <table class="ledger-table">
             <thead>
               <tr>
@@ -211,6 +211,11 @@
               <!-- Dynamically populated via JS -->
             </tbody>
           </table>
+        </div>
+
+        <!-- Mobile Client Cards Container (Shown on Mobile < 768px) -->
+        <div id="mobile-client-cards-container" class="mobile-client-cards-container">
+          <!-- Dynamically populated via JS for mobile screens -->
         </div>
       </section>
 

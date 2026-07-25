@@ -637,7 +637,11 @@ body {
   cursor: pointer;
 }
 
-/* Ledger Table Container */
+/* Desktop Ledger Table Container (>= 768px) */
+.desktop-only-table {
+  display: block;
+}
+
 .table-container {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
@@ -654,7 +658,6 @@ body {
   border-collapse: collapse;
   text-align: left;
   font-size: 0.9rem;
-  min-width: 720px;
 }
 
 .ledger-table th {
@@ -836,6 +839,76 @@ input:checked + .slider:before {
 .delete-btn:hover {
   background: var(--rose-danger);
   color: #ffffff;
+}
+
+/* ==========================================================================
+   Mobile Client Cards Layout (< 768px)
+   ========================================================================== */
+.mobile-client-cards-container {
+  display: none; /* Hidden by default on desktop */
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.client-card-mobile {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+.client-card-mobile:hover {
+  border-color: var(--border-color-hover);
+}
+
+.client-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.client-card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  background: var(--bg-input);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.card-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.card-meta-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.card-meta-val {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.client-card-actions-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 /* ==========================================================================
@@ -1409,10 +1482,20 @@ input:checked + .slider:before {
   }
 }
 
-/* Smartphone Mobile Screens (< 768px) */
+/* Smartphone Mobile Screens (< 768px): HIDE TABLE & SHOW CARD VIEW */
 @media (max-width: 768px) {
   .app-container {
     padding: 0.6rem 0.6rem 2rem 0.6rem;
+  }
+
+  /* REMOVE TABLE LAYOUT ON MOBILE SCREEN */
+  .desktop-only-table {
+    display: none !important;
+  }
+
+  /* SHOW CLIENT CARDS CONTAINER ON MOBILE SCREEN */
+  .mobile-client-cards-container {
+    display: flex !important;
   }
 
   .header {
@@ -1515,21 +1598,6 @@ input:checked + .slider:before {
     width: 100%;
   }
 
-  /* Touch-optimized Table Container for Mobile */
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: var(--radius-md);
-  }
-
-  .ledger-table {
-    min-width: 680px;
-  }
-
-  .ledger-table th, .ledger-table td {
-    padding: 0.75rem 0.85rem;
-  }
-
   .footer {
     flex-direction: column;
     align-items: center;
@@ -1566,6 +1634,15 @@ input:checked + .slider:before {
   }
 
   .btn {
+    width: 100%;
+  }
+
+  .client-card-actions-mobile {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .client-card-actions-mobile .btn {
     width: 100%;
   }
 }
