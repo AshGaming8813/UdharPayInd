@@ -1,17 +1,17 @@
 /* ==========================================================================
-   UdharPayInd Service Worker (PWA Offline & Cache Engine)
+   UdharPayInd Service Worker (PWABuilder 100% Compliant)
    ========================================================================== */
 
 const CACHE_NAME = 'udharpayind-v1';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './styles.css',
-  './app.js',
-  './manifest.json',
-  './app_logo.png',
-  './icon-192.png',
-  './icon-512.png'
+  '/',
+  '/index.html',
+  '/styles.css',
+  '/app.js',
+  '/manifest.json',
+  '/app_logo.png',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 // Install Event
@@ -40,10 +40,19 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event
+// Fetch Event - Handles Navigation & Offline Fallback for PWABuilder
 self.addEventListener('fetch', (event) => {
   // Only handle HTTP/HTTPS requests
   if (!event.request.url.startsWith('http')) return;
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('/index.html');
+      })
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

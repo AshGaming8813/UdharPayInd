@@ -12,6 +12,21 @@
   <link rel="icon" type="image/png" href="app_logo.png">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- INLINE SERVICE WORKER REGISTRATION (PWABuilder Instant Detection) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(function(registration) {
+            console.log('✅ PWA Service Worker Registered (Scope: ' + registration.scope + ')');
+          })
+          .catch(function(error) {
+            console.error('⚠️ PWA Service Worker Registration Failed:', error);
+          });
+      });
+    }
+  </script>
 </head>
 <body>
 
