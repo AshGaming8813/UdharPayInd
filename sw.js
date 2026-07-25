@@ -4,12 +4,14 @@
 
 const CACHE_NAME = 'udharpayind-v1';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/manifest.json',
-  '/app_logo.png'
+  './',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './manifest.json',
+  './app_logo.png',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Install Event
