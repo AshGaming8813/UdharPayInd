@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UdharPayInd — Automated Billing & WhatsApp Reminder Platform</title>
+  <meta name="description" content="Sleek, automated billing and WhatsApp reminder web dashboard for small merchants, milk suppliers, shopkeepers, tuition teachers, and landlords.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- HEADER & TOP NAVIGATION -->
+    <header class="header">
+      <a href="#" class="brand-wrapper" id="brand-logo">
+        <div class="brand-icon">
+          <!-- SVG Wallet / WhatsApp Hybrid Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-2-7h-4v2h4v-2z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>UdharPayInd</h1>
+          <span class="brand-tag">WhatsApp Auto-Billing</span>
+        </div>
+      </a>
+
+      <!-- Quick Search Bar -->
+      <div class="search-bar-container">
+        <svg class="search-icon" viewBox="0 0 24 24">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/>
+        </svg>
+        <input type="text" id="global-search" class="search-input" placeholder="Search clients by Name, Phone, or Category (e.g. Milk, Ramesh)...">
+      </div>
+
+      <!-- Top Action Controls -->
+      <div class="header-actions">
+        
+        <!-- ANIMATED LOGGED-IN MERCHANT BADGE / LOGO (Replaces login button when logged in) -->
+        <div class="user-anime-badge" id="header-user-badge" title="Click to view profile or edit Merchant Name & PIN">
+          <div class="anime-avatar-glow" id="header-user-avatar">SD</div>
+          <div class="user-anime-info">
+            <div class="user-anime-name" id="header-user-name">Sharma Dairy</div>
+            <div class="user-anime-status">
+              <span class="pulse-dot"></span>
+              <span id="header-user-phone">9876500000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOGIN BUTTON (Hidden when logged in) -->
+        <button class="btn btn-secondary" id="open-login-modal-btn" style="display: none;" title="Login or Register with Phone Number & PIN">
+          🔑 Login / Account
+        </button>
+
+        <button class="btn btn-secondary" id="open-merchant-setup-btn" title="Configure WhatsApp Business Number & UPI ID">
+          ⚙️ Setup Business & UPI
+        </button>
+
+        <button class="btn btn-primary" id="open-add-client-modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+          </svg>
+          + Add Client / Udhar
+        </button>
+
+        <button class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD OVERVIEW (Top Metric Cards) -->
+    <section class="metrics-grid">
+      <!-- Card 1: Total Udhar -->
+      <div class="metric-card card-rose">
+        <div class="metric-header">
+          <span class="metric-title">Kul Udhar (Total Due)</span>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-total-udhar">₹48,500</div>
+        <div class="metric-footer">
+          <span class="trend-badge trend-alert">⚠️ 8 Pending Clients</span>
+          <span>across all services</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Collected This Month -->
+      <div class="metric-card card-emerald">
+        <div class="metric-header">
+          <span class="metric-title">Collected This Month</span>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-collected-month">₹1,12,000</div>
+        <div class="metric-footer">
+          <span class="trend-badge trend-up">↑ 18.5%</span>
+          <span>vs last month</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Automated Reminders Queued -->
+      <div class="metric-card card-indigo">
+        <div class="metric-header">
+          <span class="metric-title">Reminders Queued Today</span>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.75 13.96c.25.13.41.2.46.3.06.11.04.61-.21.89-.25.28-.86.58-1.78.22-1.25-.49-2.5-1.57-3.47-2.54-.97-.97-2.05-2.22-2.54-3.47-.36-.92-.06-1.53.22-1.78.28-.25.78-.27.89-.21.1.05.17.21.3.46.43.83.92 1.7 1.08 1.94.16.24.16.48.06.68s-.24.38-.41.56c-.17.18-.32.32-.14.65.18.33.8 1.34 1.72 2.26.92.92 1.93 1.54 2.26 1.72.33.18.47.03.65-.14.18-.17.36-.31.56-.41.2-.1.44-.1.68.06.24.16 1.11.65 1.94 1.08zM12 2A10 10 0 0 0 2 12c0 1.77.46 3.45 1.28 4.93L2 22l5.23-1.23A9.97 9.97 0 0 0 12 22a10 10 0 0 0 10-10A10 10 0 0 0 12 2z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-reminders-queued">14 Pending</div>
+        <div class="metric-footer">
+          <span class="trend-badge trend-up">⏱ Next trigger: 9:00 AM</span>
+          <span>Auto-WhatsApp API</span>
+        </div>
+      </div>
+
+      <!-- Card 4: High-Risk / Overdue -->
+      <div class="metric-card card-amber">
+        <div class="metric-header">
+          <span class="metric-title">Overdue Clients (>30 Days)</span>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-overdue-clients">3 Overdue</div>
+        <div class="metric-footer">
+          <span class="trend-badge trend-alert">Action Recommended</span>
+          <span>Click to send urge text</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT AREA (Tabbed Interface) -->
+    <main>
+      <!-- Navigation Tabs -->
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="tab-ledger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+          </svg>
+          Active Clients & Udhar Ledger
+          <span class="tab-count-badge" id="client-count-badge">8</span>
+        </button>
+
+        <button class="tab-btn" data-tab="tab-whatsapp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+          WhatsApp Automation & Templates
+        </button>
+
+        <button class="tab-btn" data-tab="tab-entry">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+          </svg>
+          Quick Entry / Payment Log
+        </button>
+      </div>
+
+      <!-- TAB A: Active Clients & Udhar Ledger -->
+      <section id="tab-ledger" class="tab-pane active">
+        <!-- Controls & Filters Bar -->
+        <div class="controls-bar">
+          <div class="filter-chips-group" id="category-filter-chips">
+            <button class="chip-btn active" data-category="all">All Categories</button>
+            <button class="chip-btn" data-category="Milk">🥛 Milk Supplier</button>
+            <button class="chip-btn" data-category="Grocery">🛒 Grocery Shop</button>
+            <button class="chip-btn" data-category="Tuition">📚 Tuition Class</button>
+            <button class="chip-btn" data-category="Rent">🏠 House Rent</button>
+          </div>
+
+          <div class="secondary-filters">
+            <select id="status-select-filter" class="custom-select">
+              <option value="all">All Status</option>
+              <option value="overdue">Overdue Only (>15 days)</option>
+              <option value="active">Auto-WhatsApp Enabled</option>
+              <option value="paid">Zero Balance (Paid)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="table-container">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Client Name & Phone</th>
+                <th>Category</th>
+                <th>Outstanding Due</th>
+                <th>Billing Cycle</th>
+                <th>Last WhatsApp Sent</th>
+                <th>Auto-Send Switch</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-table-body">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB B: WhatsApp Automation Setup & Templates -->
+      <section id="tab-whatsapp" class="tab-pane">
+        <div class="automation-grid">
+          
+          <!-- Template Configuration Side -->
+          <div class="config-card">
+            <h2 class="card-heading">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--whatsapp-green)">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+              </svg>
+              WhatsApp Message Template Engine
+            </h2>
+            <p class="card-subheading">Customize reminder templates with dynamic customer variables. Messages are dispatched automatically via WhatsApp Cloud API.</p>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label class="form-label">Select Template Preset</label>
+              <select id="template-preset-select" class="form-input">
+                <option value="monthly_bill">Monthly Bill Friendly Reminder (Recommended)</option>
+                <option value="urgent_overdue">Urgent Payment Overdue Alert</option>
+                <option value="milk_weekly">Milk Supplier Weekly Summary</option>
+                <option value="tuition_fee">Tuition Monthly Fee Notice</option>
+                <option value="payment_thankyou">Payment Receipt & Thank You</option>
+              </select>
+            </div>
+
+            <!-- Dynamic Variable Insertion Chips -->
+            <div class="variables-section">
+              <span class="variables-label">Click chip to insert dynamic tag:</span>
+              <div class="var-chips-wrapper">
+                <button class="var-chip" data-var="{Client_Name}">{Client_Name}</button>
+                <button class="var-chip" data-var="{Amount}">{Amount}</button>
+                <button class="var-chip" data-var="{UPI_ID}">{UPI_ID}</button>
+                <button class="var-chip" data-var="{Due_Date}">{Due_Date}</button>
+                <button class="var-chip" data-var="{Service_Type}">{Service_Type}</button>
+                <button class="var-chip" data-var="{Month}">{Month}</button>
+              </div>
+            </div>
+
+            <!-- Message Textarea -->
+            <div class="form-group">
+              <label class="form-label">Message Content Template</label>
+              <textarea id="template-editor" class="template-textarea" spellcheck="false"></textarea>
+            </div>
+
+            <!-- Recurrence Rules Configurator -->
+            <div class="recurrence-box">
+              <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--indigo-primary);">
+                ⚙️ Recurrence & Automation Schedule Rules
+              </h4>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Auto-Trigger Frequency</label>
+                  <select class="form-input" id="rule-frequency">
+                    <option value="1st_month">1st of Every Month at 9:00 AM</option>
+                    <option value="5th_month">5th of Every Month at 9:00 AM</option>
+                    <option value="weekly_sun">Every Sunday Evening (7:00 PM)</option>
+                    <option value="daily_milk">Daily Morning Summary (8:00 AM)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Auto Follow-up Retry</label>
+                  <select class="form-input" id="rule-retry">
+                    <option value="3_days">If unpaid, re-send after 3 Days</option>
+                    <option value="5_days">If unpaid, re-send after 5 Days</option>
+                    <option value="7_days">If unpaid, re-send after 7 Days</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn btn-primary" id="save-template-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Save Template & Apply
+              </button>
+              <button class="btn btn-indigo" id="test-dispatch-btn">
+                📱 Send Test WhatsApp Message
+              </button>
+            </div>
+          </div>
+
+          <!-- Live WhatsApp Mobile Phone Mockup -->
+          <div class="phone-mockup-wrapper">
+            <div class="phone-screen">
+              <div class="wa-header">
+                <div class="wa-avatar" id="wa-mockup-avatar">UP</div>
+                <div>
+                  <div class="wa-title-name" id="wa-mockup-sender">UdharPayInd Business</div>
+                  <div class="wa-status-text">Online • Verified Business Account</div>
+                </div>
+              </div>
+              <div class="wa-chat-body">
+                <div class="wa-chat-bubble" id="live-wa-preview-bubble">
+                  Namaste Ramesh ji! 🙏 Your Milk Supplier bill for July is ₹1,450.
+
+💳 Pay via UPI ID: sharmadairy@upi
+
+📸 Please send a payment screenshot after paying for our records. Thank you!
+                  <div class="wa-time-stamp">
+                    <span>9:00 AM</span>
+                    <svg class="double-tick" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.41 11.93l-1.41 1.41 5.66 5.66 12-12-1.42-1.41zM.41 13.41l5.66 5.66 1.41-1.41L1.83 12 .41 13.41z"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB C: Quick Payment Entry / Log -->
+      <section id="tab-entry" class="tab-pane">
+        <div class="quick-entry-grid">
+          
+          <!-- Entry Form -->
+          <div class="config-card">
+            <h2 class="card-heading">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--indigo-primary)"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              Add Ledger Entry / Payment
+            </h2>
+            <p class="card-subheading">Quickly record a new credit debt (Udhar) or payment collected for any merchant client.</p>
+
+            <form id="quick-entry-form">
+              <!-- Type Toggle: Udhar (Debit) vs Payment (Credit) -->
+              <div class="transaction-type-selector">
+                <button type="button" class="type-btn type-debit active" id="btn-type-debit" data-type="debit">
+                  ➕ Add Udhar (+ Debt)
+                </button>
+                <button type="button" class="type-btn type-credit" id="btn-type-credit" data-type="credit">
+                  💚 Received Payment (- Settle)
+                </button>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="form-label">Select Client</label>
+                <select class="form-input" id="entry-client-select" required>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-grid" style="margin-bottom: 1rem;">
+                <div class="form-group">
+                  <label class="form-label">Amount (₹ INR)</label>
+                  <input type="number" class="form-input" id="entry-amount" placeholder="e.g. 1500" min="1" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Transaction Date</label>
+                  <input type="date" class="form-input" id="entry-date" required>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="form-label">Notes / Service Details</label>
+                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. 2L Daily Milk packet for July, or July Tuition Fee">
+              </div>
+
+              <button type="submit" class="btn btn-indigo" style="width: 100%;">
+                Save Ledger Entry & Update Balance
+              </button>
+            </form>
+          </div>
+
+          <!-- Transaction History Log -->
+          <div class="history-card">
+            <h3 class="card-heading" style="margin-bottom: 1.25rem;">
+              📜 Recent Transaction History
+            </h3>
+            <div id="transaction-history-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER & TRUST BADGES -->
+    <footer class="footer">
+      <div class="footer-badges">
+        <div class="badge-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--whatsapp-green)"><path d="M12 2A10 10 0 0 0 2 12c0 1.77.46 3.45 1.28 4.93L2 22l5.23-1.23A9.97 9.97 0 0 0 12 22a10 10 0 0 0 10-10A10 10 0 0 0 12 2z"/></svg>
+          WhatsApp Cloud API v19.0 Active
+        </div>
+        <div class="badge-item">
+          🔒 256-Bit Encrypted Ledger
+        </div>
+        <!-- DEVELOPED BY AD GROUP OF TECHNOLOGY LOGO BADGE -->
+        <div class="developer-logo-badge" title="Developed by AD Group of Technology">
+          <span class="ad-tech-icon">AD</span>
+          <span>Developed by <strong>AD Group of Technology</strong></span>
+        </div>
+      </div>
+      <div>
+        UdharPayInd © 2026 • Automated Merchant Billing System
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- MODAL 1: ADD NEW CLIENT -->
+  <div class="modal-overlay" id="add-client-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">➕ Add New Client & Udhar Record</h3>
+        <button class="modal-close" id="close-add-modal">&times;</button>
+      </div>
+      <form id="add-client-form">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Client Full Name *</label>
+          <input type="text" id="new-client-name" class="form-input" placeholder="e.g. Ramesh Kumar" required>
+        </div>
+
+        <div class="form-grid" style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label class="form-label">WhatsApp Phone Number *</label>
+            <input type="tel" id="new-client-phone" class="form-input" placeholder="+91 98765 43210" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Service Category *</label>
+            <select id="new-client-category" class="form-input">
+              <option value="Milk">🥛 Milk Supplier</option>
+              <option value="Grocery">🛒 Grocery Shop</option>
+              <option value="Tuition">📚 Tuition Class</option>
+              <option value="Rent">🏠 House Rent</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-bottom: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label">Initial Udhar Due Amount (₹)</label>
+            <input type="number" id="new-client-amount" class="form-input" placeholder="0" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Billing Cycle</label>
+            <select id="new-client-frequency" class="form-input">
+              <option value="Monthly - 1st">Monthly - 1st Day</option>
+              <option value="Monthly - 5th">Monthly - 5th Day</option>
+              <option value="Weekly - Sunday">Weekly - Every Sunday</option>
+              <option value="Custom Date">Custom Date</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="cancel-add-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">+ Save & Enable WhatsApp Reminders</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: SETTLE PAYMENT -->
+  <div class="modal-overlay" id="settle-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">💚 Settle Payment for <span id="settle-client-name">Client</span></h3>
+        <button class="modal-close" id="close-settle-modal">&times;</button>
+      </div>
+      <form id="settle-form">
+        <input type="hidden" id="settle-client-id">
+        <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">Current Outstanding Balance</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: var(--rose-danger);" id="settle-current-due">₹0</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Payment Amount Collected (₹)</label>
+          <input type="number" id="settle-amount-input" class="form-input" placeholder="Enter amount received" min="1" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Payment Method</label>
+          <select id="settle-method" class="form-input">
+            <option value="UPI">📱 UPI (Google Pay / PhonePe / Paytm)</option>
+            <option value="Cash">💵 Cash</option>
+            <option value="Bank Transfer">🏦 Bank Transfer</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="cancel-settle-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Settlement & Send Receipt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: REAL WHATSAPP DISPATCH MODAL -->
+  <div class="modal-overlay" id="wa-modal">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem; color: var(--whatsapp-green);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 1.77.46 3.45 1.28 4.93L2 22l5.23-1.23A9.97 9.97 0 0 0 12 22a10 10 0 0 0 10-10A10 10 0 0 0 12 2z"/></svg>
+          Send WhatsApp Reminder Message
+        </h3>
+        <button class="modal-close" id="close-wa-modal">&times;</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; background: var(--bg-input); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Sender Business:</div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: var(--whatsapp-green);" id="wa-modal-sender-info">
+            +91 98765 00000
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Recipient Client:</div>
+          <div style="font-size: 0.88rem; font-weight: 700;" id="wa-modal-recipient">
+            Ramesh Kumar
+          </div>
+        </div>
+      </div>
+
+      <!-- EDITABLE & SCROLLABLE MESSAGE TEXTAREA -->
+      <div class="form-group" style="margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+          <label class="form-label" style="margin-bottom: 0;">✏️ Edit Message Content (Scrollable):</label>
+          <span style="font-size: 0.75rem; color: var(--whatsapp-green); font-weight: 600;">Full Editing Enabled</span>
+        </div>
+        <textarea id="wa-modal-message-editor" class="wa-message-editor-scrollable" placeholder="Type or edit message content here..."></textarea>
+      </div>
+
+      <!-- Dispatch Method Options -->
+      <div style="background: var(--bg-input); padding: 0.85rem 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; border: 1px solid var(--border-color);">
+        <label class="form-label" style="margin-bottom: 0.5rem; display: block;">Choose Dispatch Method:</label>
+        
+        <div style="display: flex; gap: 1.5rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="radio" name="dispatch-mode" value="direct" id="dispatch-mode-direct" checked>
+            <span style="font-weight: 700; font-size: 0.88rem;">WhatsApp App / Web (`wa.me`)</span>
+          </label>
+
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="radio" name="dispatch-mode" value="cloud_api" id="dispatch-mode-api">
+            <span style="font-weight: 700; font-size: 0.88rem;">Meta WhatsApp Cloud API</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Cloud API JSON Inspector (hidden by default) -->
+      <div id="cloud-api-inspector" style="display: none; margin-bottom: 1.25rem;">
+        <label class="form-label">Meta Cloud API JSON Payload (POST https://graph.facebook.com/v19.0/messages):</label>
+        <pre style="background: #000000; color: #10b981; padding: 0.85rem; border-radius: var(--radius-md); font-family: monospace; font-size: 0.78rem; overflow-x: auto; max-height: 120px;" id="api-json-preview"></pre>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+        <button class="btn btn-secondary" id="cancel-wa-modal">Cancel</button>
+        <a href="#" target="_blank" class="btn btn-primary" id="open-wa-direct-link" style="text-decoration: none;">
+          🚀 Dispatch Message Now
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: MERCHANT BUSINESS & UPI SETUP -->
+  <div class="modal-overlay" id="merchant-setup-modal">
+    <div class="modal-card" style="max-width: 560px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem; color: var(--whatsapp-green);">
+          ⚙️ Merchant Business & UPI Setup
+        </h3>
+        <button class="modal-close" id="close-merchant-modal">&times;</button>
+      </div>
+
+      <form id="merchant-setup-form">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Business / Shop Display Name *</label>
+          <input type="text" id="merchant-business-name" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Primary WhatsApp Business Phone Number *</label>
+          <input type="tel" id="merchant-business-phone" class="form-input" placeholder="9876500000" required>
+        </div>
+
+        <!-- MERCHANT UPI ID FIELD -->
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Merchant Primary UPI ID (To receive payments) *</label>
+          <input type="text" id="merchant-upi-id" class="form-input" placeholder="e.g. sharmadairy@upi or 9876500000@paytm" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Default Dispatch Method</label>
+          <select id="merchant-default-dispatch" class="form-input">
+            <option value="direct">WhatsApp Web / Mobile App Direct Link (wa.me)</option>
+            <option value="cloud_api">Meta WhatsApp Cloud API (Automated Server REST)</option>
+          </select>
+        </div>
+
+        <!-- Optional Meta API Credentials -->
+        <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--indigo-primary);">
+            🔑 Meta WhatsApp Cloud API Credentials (Optional)
+          </h4>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label class="form-label">Phone Number ID</label>
+            <input type="text" id="merchant-phone-number-id" class="form-input" placeholder="e.g. 109823478912345">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Permanent Meta Access Token</label>
+            <input type="password" id="merchant-access-token" class="form-input" placeholder="EAAG..... (Bearer Token)">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="cancel-merchant-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">💾 Save Business Profile & UPI ID</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 5: SIMPLE PHONE + PIN LOGIN & EDITABLE USER NAME -->
+  <div class="modal-overlay" id="login-account-modal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem; color: var(--indigo-primary);">
+          🔐 UdharPayInd Account Login & Profile
+        </h3>
+        <button class="modal-close" id="close-login-modal">&times;</button>
+      </div>
+
+      <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
+        <span style="font-size: 0.82rem; color: var(--text-muted);">
+          💡 Enter or edit your **Merchant Display Name**, **Mobile Number**, and **4-Digit PIN** below to save or restore your account records!
+        </span>
+      </div>
+
+      <form id="login-account-form">
+        <!-- EDITABLE MERCHANT USER NAME FIELD -->
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Merchant / Business Display Name *</label>
+          <input type="text" id="login-name-input" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Merchant Mobile Phone Number *</label>
+          <input type="tel" id="login-phone-input" class="form-input" placeholder="e.g. 9876500000" maxlength="10" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">4-Digit Security PIN *</label>
+          <input type="password" id="login-pin-input" class="form-input" placeholder="e.g. 1234" maxlength="4" required>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="cancel-login-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">🔓 Save & Login to UdharPayInd</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
