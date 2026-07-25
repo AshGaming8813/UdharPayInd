@@ -1,6 +1,6 @@
 /* ==========================================================================
    UdharPayInd - Automated Billing & WhatsApp Reminder Platform
-   Application Logic, Unified Card View Engine (Computer & Mobile)
+   Application Logic, Unified Card View & Mobile Section Switcher
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const globalSearchInput = document.getElementById('global-search');
   const categoryChips = document.querySelectorAll('#category-filter-chips .chip-btn');
   const statusSelectFilter = document.getElementById('status-select-filter');
+  const mobileNavButtons = document.querySelectorAll('.mobile-nav-btn');
 
   // Header Elements & Animated User Logo
   const headerUserBadge = document.getElementById('header-user-badge');
@@ -412,7 +413,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 5. Render Active Clients CARD VIEW (Used for BOTH Computer & Mobile Mode - No Table!)
+  // 5. MOBILE BOTTOM NAVIGATION SWITCHER
+  // ==========================================
+  mobileNavButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+
+      // 1. Highlight clicked nav button
+      mobileNavButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // 2. Switch active mobile section
+      document.querySelectorAll('.dashboard-section').forEach(sec => {
+        sec.classList.remove('mobile-active');
+      });
+
+      const targetSec = document.getElementById(targetId);
+      if (targetSec) {
+        targetSec.classList.add('mobile-active');
+        targetSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ==========================================
+  // 6. Render Active Clients CARD VIEW (Used for BOTH Computer & Mobile Mode)
   // ==========================================
   function renderLedgerTable() {
     clientCardsGrid.innerHTML = '';
@@ -444,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filteredClients.forEach(client => {
       const amountClass = client.amountDue > 5000 ? 'amount-high' : client.amountDue > 0 ? 'amount-medium' : 'amount-zero';
 
-      // UNIFIED CLIENT CARD (COMPUTER & MOBILE)
+      // UNIFIED CLIENT CARD
       const card = document.createElement('div');
       card.className = 'client-card-item';
       card.innerHTML = `
@@ -588,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 6. Template Engine & Live Preview
+  // 7. Template Engine & Live Preview
   // ==========================================
   function updateTemplateEditorAndPreview() {
     const rawTemplate = templateEditor.value;
@@ -630,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 7. REAL WHATSAPP DISPATCH MODAL WITH INLINE EDITING & SCROLLBAR
+  // 8. REAL WHATSAPP DISPATCH MODAL WITH INLINE EDITING & SCROLLBAR
   // ==========================================
   function updateDispatchModalTargets() {
     const client = state.currentDispatchClient || state.clients[0];
@@ -716,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 8. SIMPLE PHONE, EDITABLE NAME & PIN LOGIN WORKFLOW
+  // 9. SIMPLE PHONE, EDITABLE NAME & PIN LOGIN WORKFLOW
   // ==========================================
   function openLoginModal() {
     loginNameInput.value = state.merchant.businessName || 'Sharma Dairy & Provisions';
@@ -769,7 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 9. MERCHANT BUSINESS & UPI SETUP MODAL
+  // 10. MERCHANT BUSINESS & UPI SETUP MODAL
   // ==========================================
   function openMerchantSetupModal() {
     merchantBusinessNameInput.value = state.merchant.businessName || '';
@@ -814,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 10. SETTLE PAYMENT & ADD CLIENT WORKFLOWS
+  // 11. SETTLE PAYMENT & ADD CLIENT WORKFLOWS
   // ==========================================
   function openSettleModal(clientId) {
     const client = state.clients.find(c => c.id === clientId);

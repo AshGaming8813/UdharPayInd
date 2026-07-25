@@ -496,7 +496,7 @@ body {
 .trend-alert { background: var(--rose-light-bg); color: var(--rose-danger); }
 
 /* ==========================================================================
-   UNIFIED DASHBOARD LAYOUT (All 3 Sections in Card View on One Screen)
+   UNIFIED DASHBOARD LAYOUT
    ========================================================================== */
 .dashboard-unified-layout {
   display: flex;
@@ -530,7 +530,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap; /* NO HORIZONTAL SCROLL! Chips wrap cleanly on all screens */
+  flex-wrap: wrap;
   overflow: visible;
 }
 
@@ -581,9 +581,7 @@ body {
   cursor: pointer;
 }
 
-/* ==========================================================================
-   UNIFIED CLIENT CARDS GRID (Used for Computer & Mobile Modes - Table Removed!)
-   ========================================================================== */
+/* UNIFIED CLIENT CARDS GRID (Used for Computer & Mobile Modes) */
 .client-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
@@ -795,9 +793,7 @@ input:checked + .slider:before {
   color: #ffffff;
 }
 
-/* ==========================================================================
-   DASHBOARD BOTTOM GRID: WhatsApp Automation & Quick Entry Log Side-by-Side
-   ========================================================================== */
+/* DASHBOARD BOTTOM GRID */
 .dashboard-bottom-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -811,7 +807,6 @@ input:checked + .slider:before {
   }
 }
 
-/* Tab B: WhatsApp Automation Config Card */
 .config-card {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
@@ -1057,7 +1052,6 @@ input:checked + .slider:before {
   border-color: var(--indigo-primary);
 }
 
-/* Tab C: Quick Entry & History */
 .transaction-type-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1129,8 +1123,13 @@ input:checked + .slider:before {
 .tx-credit-icon { background: var(--emerald-light-bg); color: var(--emerald-success); }
 
 /* ==========================================================================
-   Modals & Universal Top-to-Bottom Scroll System
+   MOBILE FLOATING BOTTOM PAGE SWITCHER BAR (< 768px)
    ========================================================================== */
+.mobile-bottom-nav {
+  display: none; /* Hidden on Desktop */
+}
+
+/* Modals & Universal Scroll System */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -1352,7 +1351,70 @@ input:checked + .slider:before {
 
 @media (max-width: 768px) {
   .app-container {
-    padding: 0.6rem 0.6rem 2rem 0.6rem;
+    padding: 0.6rem 0.6rem 5rem 0.6rem; /* Bottom padding so bottom nav doesn't cover content */
+  }
+
+  /* MOBILE FLOATING BOTTOM NAVIGATION BAR */
+  .mobile-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    background: rgba(18, 25, 41, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color-hover);
+    border-radius: var(--radius-full);
+    padding: 0.4rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    z-index: 900;
+  }
+
+  .mobile-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-full);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    flex: 1;
+  }
+
+  .mobile-nav-btn.active {
+    background: var(--whatsapp-light-bg);
+    color: var(--whatsapp-green);
+    box-shadow: 0 0 12px rgba(37, 211, 102, 0.25);
+  }
+
+  .mobile-nav-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  /* PAGE SECTIONS DISPLAY SWITCHER ON MOBILE */
+  .card-section-ledger,
+  .card-section-whatsapp,
+  .card-section-entry {
+    display: none; /* Controlled by bottom navbar on mobile */
+  }
+
+  .card-section-ledger.mobile-active,
+  .card-section-whatsapp.mobile-active,
+  .card-section-entry.mobile-active {
+    display: block !important;
+    animation: fadeIn 0.3s ease;
   }
 
   .client-cards-grid {
@@ -1459,7 +1521,7 @@ input:checked + .slider:before {
   }
 
   .toast-container {
-    bottom: 1rem;
+    bottom: 4.5rem;
     right: 1rem;
     left: 1rem;
   }
