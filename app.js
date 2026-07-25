@@ -1,7 +1,20 @@
 /* ==========================================================================
    UdharPayInd - Automated Billing & WhatsApp Reminder Platform
-   Application Logic, Unified Card View & Mobile Section Switcher
+   Application Logic, Unified Card View & Service Worker Registration
    ========================================================================== */
+
+// Register Service Worker for PWA Offline Caching & Installation
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => {
+        console.log('✅ UdharPayInd Service Worker Registered Successfully:', registration.scope);
+      })
+      .catch(error => {
+        console.error('⚠️ Service Worker Registration Failed:', error);
+      });
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 
