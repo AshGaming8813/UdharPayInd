@@ -345,7 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'Grocery': return '🛒 Grocery';
       case 'Tuition': return '📚 Tuition';
       case 'Rent': return '🏠 Rent';
-      default: return '📦 Service';
+      case 'Others': return '📦 Others';
+      default: return `🏷️ ${category}`;
     }
   }
 
@@ -899,7 +900,11 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const name = document.getElementById('new-client-name').value.trim();
     const phone = document.getElementById('new-client-phone').value.trim();
-    const category = document.getElementById('new-client-category').value;
+    let category = document.getElementById('new-client-category').value;
+    if (category === 'custom') {
+      const customCategoryVal = document.getElementById('new-client-custom-category').value.trim();
+      category = customCategoryVal || 'Others';
+    }
     const amount = parseFloat(document.getElementById('new-client-amount').value) || 0;
     const frequency = document.getElementById('new-client-frequency').value;
 
@@ -933,8 +938,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addClientModal.classList.remove('active');
     addClientForm.reset();
+    const newClientCustomWrap = document.getElementById('new-client-custom-wrap');
+    if (newClientCustomWrap) newClientCustomWrap.style.display = 'none';
 
     updateMetrics();
+    renderCategoryFilterChips();
     renderLedgerTable();
     populateEntryClientDropdown();
     renderTransactionHistory();
@@ -1099,6 +1107,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Custom Category Input Toggle Listeners
+  const newClientCategorySelect = document.getElementById('new-client-category');
+  const newClientCustomWrap = document.getElementById('new-client-custom-wrap');
+  const onboardCategorySelect = document.getElementById('onboard-category');
+  const onboardCustomWrap = document.getElementById('onboard-custom-wrap');
+
+  if (newClientCategorySelect) {
+    newClientCategorySelect.addEventListener('change', () => {
+      if (newClientCategorySelect.value === 'custom') {
+        if (newClientCustomWrap) newClientCustomWrap.style.display = 'block';
+      } else {
+        if (newClientCustomWrap) newClientCustomWrap.style.display = 'none';
+      }
+    });
+  }
+
+  if (onboardCategorySelect) {
+    onboardCategorySelect.addEventListener('change', () => {
+      if (onboardCategorySelect.value === 'custom') {
+        if (onboardCustomWrap) onboardCustomWrap.style.display = 'block';
+      } else {
+        if (onboardCustomWrap) onboardCustomWrap.style.display = 'none';
+      }
+    });
+  }
+
+  function renderCategoryFilterChips() {
+    const chipsContainer = document.getElementById('category-filter-chips');
+    if (!chipsContainer) return;
+
+    const standardCategories = ['Milk', 'Grocery', 'Tuition', 'Rent', 'Others'];
+    const customCategories = [];
+    state.clients.forEach(c => {
+      if (c.category && !standardCategories.includes(c.category) && !customCategories.includes(c.category)) {
+        customCategories.push(c.category);
+      }
+    });
+
+    let html = `<button class="chip-btn ${state.activeCategoryFilter === 'all' ? 'active' : ''}" data-category="all">All Categories</button>`;
+    
+    standardCategories.forEach(cat => {
+      const activeClass = state.activeCategoryFilter === cat ? 'active' : '';
+      html += `<button class="chip-btn ${activeClass}" data-category="${cat}">${getCategoryIcon(cat)}</button>`;
+    });
+
+    customCategories.forEach(cat => {
+      const activeClass = state.activeCategoryFilter === cat ? 'active' : '';
+      html += `<button class="chip-btn ${activeClass}" data-category="${cat}">🏷️ ${cat}</button>`;
+    });
+
+    chipsContainer.innerHTML = html;
+
+    chipsContainer.querySelectorAll('.chip-btn').forEach(chip => {
+      addTapListener(chip, () => {
+        chipsContainer.querySelectorAll('.chip-btn').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.activeCategoryFilter = chip.getAttribute('data-category');
+        renderLedgerTable();
+      });
+    });
+  }
+
   if (onboardingForm) {
     onboardingForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1112,12 +1182,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      let selectedCategory = onboardCategorySelect ? onboardCategorySelect.value : 'Milk';
+      if (selectedCategory === 'custom') {
+        const customCatInput = document.getElementById('onboard-custom-category');
+        selectedCategory = (customCatInput && customCatInput.value.trim()) ? customCatInput.value.trim() : 'Others';
+      }
+
       loadAccountData(phone);
       state.merchant.businessName = name;
       state.merchant.businessPhone = phone;
       state.merchant.pin = pin;
       state.merchant.upiId = upi;
-      state.merchant.category = onboardCategorySelect.value;
+      state.merchant.category = selectedCategory;
       saveMerchantDB();
 
       updateMerchantHeaderDisplay();
@@ -1143,6 +1219,7 @@ document.addEventListener('DOMContentLoaded', () => {
   templateEditor.value = state.templates.monthly_bill;
   updateTemplateEditorAndPreview();
   updateMetrics();
+  renderCategoryFilterChips();
   renderLedgerTable();
   populateEntryClientDropdown();
   renderTransactionHistory();

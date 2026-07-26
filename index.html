@@ -207,6 +207,7 @@
             <button class="chip-btn" data-category="Grocery">🛒 Grocery Shop</button>
             <button class="chip-btn" data-category="Tuition">📚 Tuition Class</button>
             <button class="chip-btn" data-category="Rent">🏠 House Rent</button>
+            <button class="chip-btn" data-category="Others">📦 Others</button>
           </div>
 
           <div class="secondary-filters">
@@ -476,8 +477,12 @@
             <option value="Grocery">🛒 Grocery Shop</option>
             <option value="Tuition">📚 Tuition Class</option>
             <option value="Rent">🏠 House Rent</option>
-            <option value="General">📦 General Shopkeeper / Services</option>
+            <option value="Others">📦 Others</option>
+            <option value="custom">✍️ Custom Category...</option>
           </select>
+          <div id="onboard-custom-wrap" style="display: none; margin-top: 0.5rem;">
+            <input type="text" id="onboard-custom-category" class="form-input" placeholder="Type custom category (e.g. Laundry, Newspaper)" autocomplete="off">
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
@@ -513,7 +518,12 @@
               <option value="Grocery">🛒 Grocery Shop</option>
               <option value="Tuition">📚 Tuition Class</option>
               <option value="Rent">🏠 House Rent</option>
+              <option value="Others">📦 Others</option>
+              <option value="custom">✍️ Custom Category...</option>
             </select>
+            <div id="new-client-custom-wrap" style="display: none; margin-top: 0.5rem;">
+              <input type="text" id="new-client-custom-category" class="form-input" placeholder="Type custom category (e.g. Laundry, Cable TV)" autocomplete="off">
+            </div>
           </div>
         </div>
 
