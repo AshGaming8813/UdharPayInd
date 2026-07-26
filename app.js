@@ -205,6 +205,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const merchantPhoneNumberIdInput = document.getElementById('merchant-phone-number-id');
   const merchantAccessTokenInput = document.getElementById('merchant-access-token');
 
+  // Force purge legacy demo data so new/fresh app sessions start with ZERO demo clients
+  function purgeLegacyDemoData() {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('udharpayind_')) {
+        try {
+          const val = JSON.parse(localStorage.getItem(key));
+          if (Array.isArray(val) && val.some(c => c && c.name === 'Ramesh Kumar')) {
+            localStorage.removeItem(key);
+          }
+        } catch (e) {}
+      }
+    }
+  }
+  purgeLegacyDemoData();
+
   // Login Modal Elements
   const loginAccountModal = document.getElementById('login-account-modal');
   const closeLoginModalBtn = document.getElementById('close-login-modal');
@@ -213,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginNameInput = document.getElementById('login-name-input');
   const loginPhoneInput = document.getElementById('login-phone-input');
   const loginPinInput = document.getElementById('login-pin-input');
+  const loginUpiInput = document.getElementById('login-upi-input');
 
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
   const toastContainer = document.getElementById('toast-container');
@@ -748,102 +765,65 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 9. SIMPLE PHONE, EDITABLE NAME & PIN LOGIN WORKFLOW
+  // 9. UNIFIED MERCHANT LOGIN & ACCOUNT SETUP WORKFLOW
   // ==========================================
   function openLoginModal() {
-    loginNameInput.value = state.merchant.businessName || 'Sharma Dairy & Provisions';
-    loginPhoneInput.value = state.merchant.businessPhone || activePhone;
-    loginPinInput.value = state.merchant.pin || '1234';
+    loginNameInput.value = state.merchant.businessName || '';
+    loginPhoneInput.value = state.merchant.businessPhone || activePhone || '';
+    loginPinInput.value = state.merchant.pin || '';
+    if (loginUpiInput) loginUpiInput.value = state.merchant.upiId || '';
     loginAccountModal.classList.add('active');
   }
 
-  openLoginModalBtn.addEventListener('click', openLoginModal);
-  headerUserBadge.addEventListener('click', openLoginModal);
+  if (openLoginModalBtn) openLoginModalBtn.addEventListener('click', openLoginModal);
+  if (headerUserBadge) headerUserBadge.addEventListener('click', openLoginModal);
 
-  closeLoginModalBtn.addEventListener('click', () => loginAccountModal.classList.remove('active'));
-  cancelLoginModalBtn.addEventListener('click', () => loginAccountModal.classList.remove('active'));
+  if (closeLoginModalBtn) closeLoginModalBtn.addEventListener('click', () => loginAccountModal.classList.remove('active'));
+  if (cancelLoginModalBtn) cancelLoginModalBtn.addEventListener('click', () => loginAccountModal.classList.remove('active'));
 
-  loginAccountForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = loginNameInput.value.trim();
-    const phone = loginPhoneInput.value.trim();
-    const pin = loginPinInput.value.trim();
+  if (loginAccountForm) {
+    loginAccountForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = loginNameInput.value.trim();
+      const phone = loginPhoneInput.value.trim();
+      const pin = loginPinInput.value.trim();
+      const upi = loginUpiInput ? loginUpiInput.value.trim() : '';
 
-    if (!name) {
-      alert('Please enter a valid Merchant/Business Display Name.');
-      return;
-    }
-    if (phone.length < 10) {
-      alert('Please enter a valid 10-digit mobile phone number.');
-      return;
-    }
-    if (pin.length !== 4) {
-      alert('Please enter a 4-digit security PIN.');
-      return;
-    }
+      if (!name) {
+        alert('Please enter a valid Merchant/Business Display Name.');
+        return;
+      }
+      if (phone.length < 10) {
+        alert('Please enter a valid 10-digit mobile phone number.');
+        return;
+      }
+      if (pin.length !== 4) {
+        alert('Please enter a 4-digit security PIN.');
+        return;
+      }
+      if (!upi) {
+        alert('Please enter your primary Merchant UPI ID.');
+        return;
+      }
 
-    // Switch/load account tied to this mobile number & update Merchant Name
-    loadAccountData(phone);
-    state.merchant.businessName = name;
-    state.merchant.businessPhone = phone;
-    state.merchant.pin = pin;
-    saveMerchantDB();
+      loadAccountData(phone);
+      state.merchant.businessName = name;
+      state.merchant.businessPhone = phone;
+      state.merchant.pin = pin;
+      state.merchant.upiId = upi;
+      saveMerchantDB();
 
-    updateMerchantHeaderDisplay();
-    updateTemplateEditorAndPreview();
-    updateMetrics();
-    renderLedgerTable();
-    populateEntryClientDropdown();
-    renderTransactionHistory();
+      updateMerchantHeaderDisplay();
+      updateTemplateEditorAndPreview();
+      updateMetrics();
+      renderLedgerTable();
+      populateEntryClientDropdown();
+      renderTransactionHistory();
 
-    loginAccountModal.classList.remove('active');
-    showToast(`Saved & logged in as ${state.merchant.businessName}!`, 'success');
-  });
-
-  // ==========================================
-  // 10. MERCHANT BUSINESS & UPI SETUP MODAL
-  // ==========================================
-  function openMerchantSetupModal() {
-    merchantBusinessNameInput.value = state.merchant.businessName || '';
-    merchantBusinessPhoneInput.value = state.merchant.businessPhone || activePhone;
-    merchantUpiIdInput.value = state.merchant.upiId || 'sharmadairy@upi';
-    merchantDefaultDispatchSelect.value = state.merchant.defaultDispatch || 'direct';
-    merchantPhoneNumberIdInput.value = state.merchant.phoneNumberId || '';
-    merchantAccessTokenInput.value = state.merchant.accessToken || '';
-
-    updateMerchantHeaderDisplay();
-    merchantSetupModal.classList.add('active');
+      loginAccountModal.classList.remove('active');
+      showToast(`Saved & logged in as ${state.merchant.businessName}!`, 'success');
+    });
   }
-
-  openMerchantSetupBtn.addEventListener('click', openMerchantSetupModal);
-
-  closeMerchantModalBtn.addEventListener('click', () => merchantSetupModal.classList.remove('active'));
-  cancelMerchantModalBtn.addEventListener('click', () => merchantSetupModal.classList.remove('active'));
-
-  merchantSetupForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const newPhone = merchantBusinessPhoneInput.value.trim();
-
-    state.merchant = {
-      ...state.merchant,
-      businessName: merchantBusinessNameInput.value.trim(),
-      businessPhone: newPhone,
-      upiId: merchantUpiIdInput.value.trim(),
-      defaultDispatch: merchantDefaultDispatchSelect.value,
-      phoneNumberId: merchantPhoneNumberIdInput.value.trim(),
-      accessToken: merchantAccessTokenInput.value.trim()
-    };
-
-    activePhone = newPhone;
-    localStorage.setItem(CURRENT_USER_KEY, activePhone);
-
-    saveMerchantDB(); // PERSIST TO DATABASE
-    updateMerchantHeaderDisplay();
-    updateTemplateEditorAndPreview();
-
-    merchantSetupModal.classList.remove('active');
-    showToast(`Merchant profile saved for ${state.merchant.businessName}!`, 'success');
-  });
 
   // ==========================================
   // 11. SETTLE PAYMENT & ADD CLIENT WORKFLOWS
