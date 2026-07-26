@@ -1081,17 +1081,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const onboardUpiInput = document.getElementById('onboard-upi');
   const onboardCategorySelect = document.getElementById('onboard-category');
 
+  const closeOnboardingModalBtn = document.getElementById('close-onboarding-modal');
+  if (closeOnboardingModalBtn) addTapListener(closeOnboardingModalBtn, () => {
+    if (onboardingModal) onboardingModal.classList.remove('active');
+  });
+
+  // Universal Backdrop Click Handler (Closes modal if clicked outside card)
+  document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+  });
+
   function checkFirstLaunchOnboarding() {
     if (onboardNameInput) onboardNameInput.value = '';
     if (onboardPhoneInput) onboardPhoneInput.value = '';
     if (onboardPinInput) onboardPinInput.value = '';
     if (onboardUpiInput) onboardUpiInput.value = '';
-
-    if (!activePhone || !state.merchant.businessName) {
-      if (onboardingModal) onboardingModal.classList.add('active');
-    } else {
-      if (onboardingModal) onboardingModal.classList.remove('active');
-    }
+    if (onboardingModal) onboardingModal.classList.remove('active');
   }
 
   // Custom Category Input Toggle Listeners
