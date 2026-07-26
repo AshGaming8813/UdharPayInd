@@ -251,23 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 3. Helper & Format Functions
   // ==========================================
-  // Mobile Touch & Click Helper
+  // Universal Click & Tap Listener
   function addTapListener(element, callback) {
     if (!element) return;
-    let touchHandled = false;
-
-    element.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      touchHandled = true;
-      callback(e);
-      setTimeout(() => { touchHandled = false; }, 400);
-    }, { passive: false });
-
-    element.addEventListener('click', (e) => {
-      if (!touchHandled) {
-        callback(e);
-      }
-    });
+    element.addEventListener('click', callback);
   }
 
   function formatCurrency(amount) {
