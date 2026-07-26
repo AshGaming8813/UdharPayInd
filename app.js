@@ -779,10 +779,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   function openLoginModal() {
     // SECURITY GUARANTEE: Never pre-fill sensitive merchant credentials on screen!
+    if (loginAccountForm) loginAccountForm.reset();
     loginNameInput.value = '';
     loginPhoneInput.value = '';
     loginPinInput.value = '';
     if (loginUpiInput) loginUpiInput.value = '';
+
+    // Override any browser password manager auto-fill injections
+    setTimeout(() => {
+      loginNameInput.value = '';
+      loginPhoneInput.value = '';
+      loginPinInput.value = '';
+      if (loginUpiInput) loginUpiInput.value = '';
+    }, 100);
+
     loginAccountModal.classList.add('active');
   }
 

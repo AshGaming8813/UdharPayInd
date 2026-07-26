@@ -81,7 +81,7 @@
           <svg class="search-icon" viewBox="0 0 24 24">
             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/>
           </svg>
-          <input type="text" id="global-search" class="search-input" placeholder="Search clients by Name, Phone, or Category (e.g. Milk, Ramesh)...">
+          <input type="text" id="global-search" class="search-input" placeholder="Search clients by Name, Phone, or Category (e.g. Milk, Ramesh)..." autocomplete="off">
         </div>
 
         <div class="action-buttons-group">
@@ -340,7 +340,7 @@
             </h2>
             <p class="card-subheading">Quickly record a new credit debt (Udhar) or payment collected.</p>
 
-            <form id="quick-entry-form">
+            <form id="quick-entry-form" autocomplete="off">
               <div class="transaction-type-selector">
                 <button type="button" class="type-btn type-debit active" id="btn-type-debit" data-type="debit">
                   ➕ Add Udhar (+ Debt)
@@ -358,7 +358,7 @@
               <div class="form-grid" style="margin-bottom: 1rem;">
                 <div class="form-group">
                   <label class="form-label">Amount (₹ INR)</label>
-                  <input type="number" class="form-input" id="entry-amount" placeholder="e.g. 1500" min="1" required>
+                  <input type="number" class="form-input" id="entry-amount" placeholder="e.g. 1500" min="1" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -369,7 +369,7 @@
 
               <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label class="form-label">Notes / Service Details</label>
-                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. Udhar Entry">
+                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. Udhar Entry" autocomplete="off">
               </div>
 
               <button type="submit" class="btn btn-indigo" style="width: 100%;">
@@ -447,26 +447,26 @@
         Please tell us about yourself and your business to set up your fresh, clean ledger dashboard.
       </p>
 
-      <form id="onboarding-form">
+      <form id="onboarding-form" autocomplete="off">
         <div class="form-group" style="margin-bottom: 1rem;">
           <label class="form-label">Merchant / Business Display Name *</label>
-          <input type="text" id="onboard-name" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required>
+          <input type="text" id="onboard-name" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required autocomplete="off">
         </div>
 
         <div class="form-grid" style="margin-bottom: 1rem;">
           <div class="form-group">
             <label class="form-label">Mobile Phone Number *</label>
-            <input type="tel" id="onboard-phone" class="form-input" placeholder="e.g. 9876500000" maxlength="10" required>
+            <input type="tel" id="onboard-phone" class="form-input" placeholder="e.g. 9876500000" maxlength="10" required autocomplete="off">
           </div>
           <div class="form-group">
             <label class="form-label">4-Digit Security PIN *</label>
-            <input type="password" id="onboard-pin" class="form-input" placeholder="e.g. 1234" maxlength="4" required>
+            <input type="password" id="onboard-pin" class="form-input" placeholder="e.g. 1234" maxlength="4" required autocomplete="new-password">
           </div>
         </div>
 
         <div class="form-group" style="margin-bottom: 1.25rem;">
           <label class="form-label">Merchant Primary UPI ID (To receive payments) *</label>
-          <input type="text" id="onboard-upi" class="form-input" placeholder="e.g. sharmadairy@upi or 9876500000@paytm" required>
+          <input type="text" id="onboard-upi" class="form-input" placeholder="e.g. sharmadairy@upi or 9876500000@paytm" required autocomplete="off">
         </div>
 
         <div class="form-group" style="margin-bottom: 1.5rem;">
@@ -494,16 +494,16 @@
         <h3 class="modal-title">➕ Add New Client & Udhar Record</h3>
         <button class="modal-close" id="close-add-modal">&times;</button>
       </div>
-      <form id="add-client-form">
+      <form id="add-client-form" autocomplete="off">
         <div class="form-group" style="margin-bottom: 1rem;">
           <label class="form-label">Client Full Name *</label>
-          <input type="text" id="new-client-name" class="form-input" placeholder="e.g. Ramesh Kumar" required>
+          <input type="text" id="new-client-name" class="form-input" placeholder="e.g. Ramesh Kumar" required autocomplete="off">
         </div>
 
         <div class="form-grid" style="margin-bottom: 1rem;">
           <div class="form-group">
             <label class="form-label">WhatsApp Phone Number *</label>
-            <input type="tel" id="new-client-phone" class="form-input" placeholder="+91 98765 43210" required>
+            <input type="tel" id="new-client-phone" class="form-input" placeholder="+91 98765 43210" required autocomplete="off">
           </div>
 
           <div class="form-group">
@@ -520,7 +520,7 @@
         <div class="form-grid" style="margin-bottom: 1.25rem;">
           <div class="form-group">
             <label class="form-label">Initial Udhar Due Amount (₹)</label>
-            <input type="number" id="new-client-amount" class="form-input" placeholder="0" min="0" required>
+            <input type="number" id="new-client-amount" class="form-input" placeholder="0" min="0" required autocomplete="off">
           </div>
 
           <div class="form-group">
@@ -549,7 +549,7 @@
         <h3 class="modal-title">💚 Settle Payment for <span id="settle-client-name">Client</span></h3>
         <button class="modal-close" id="close-settle-modal">&times;</button>
       </div>
-      <form id="settle-form">
+      <form id="settle-form" autocomplete="off">
         <input type="hidden" id="settle-client-id">
         <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
           <div style="font-size: 0.85rem; color: var(--text-muted);">Current Outstanding Balance</div>
@@ -558,7 +558,7 @@
 
         <div class="form-group" style="margin-bottom: 1rem;">
           <label class="form-label">Payment Amount Collected (₹)</label>
-          <input type="number" id="settle-amount-input" class="form-input" placeholder="Enter amount received" min="1" required>
+          <input type="number" id="settle-amount-input" class="form-input" placeholder="Enter amount received" min="1" required autocomplete="off">
         </div>
 
         <div class="form-group" style="margin-bottom: 1.5rem;">
@@ -657,33 +657,33 @@
 
       <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
         <span style="font-size: 0.82rem; color: var(--text-muted);">
-          💡 Edit your **Merchant Display Name**, **Mobile Number**, **4-Digit PIN**, and **UPI ID** below to save or switch your account records!
+          💡 Enter your **Merchant Display Name**, **Mobile Number**, **4-Digit PIN**, and **UPI ID** to log in to your account.
         </span>
       </div>
 
-      <form id="login-account-form">
+      <form id="login-account-form" autocomplete="off">
         <!-- EDITABLE MERCHANT USER NAME FIELD -->
         <div class="form-group" style="margin-bottom: 1rem;">
           <label class="form-label">Merchant / Business Display Name *</label>
-          <input type="text" id="login-name-input" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required>
+          <input type="text" id="login-name-input" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required autocomplete="off">
         </div>
 
         <div class="form-grid" style="margin-bottom: 1rem;">
           <div class="form-group">
             <label class="form-label">Merchant Mobile Phone Number *</label>
-            <input type="tel" id="login-phone-input" class="form-input" placeholder="e.g. 9876500000" maxlength="10" required>
+            <input type="tel" id="login-phone-input" class="form-input" placeholder="e.g. 9876500000" maxlength="10" required autocomplete="off">
           </div>
 
           <div class="form-group">
             <label class="form-label">4-Digit Security PIN *</label>
-            <input type="password" id="login-pin-input" class="form-input" placeholder="e.g. 1234" maxlength="4" required>
+            <input type="password" id="login-pin-input" class="form-input" placeholder="e.g. 1234" maxlength="4" required autocomplete="new-password">
           </div>
         </div>
 
         <!-- MERCHANT UPI ID FIELD -->
         <div class="form-group" style="margin-bottom: 1.5rem;">
           <label class="form-label">Merchant Primary UPI ID (To receive payments) *</label>
-          <input type="text" id="login-upi-input" class="form-input" placeholder="e.g. sharmadairy@upi or 9876500000@paytm" required>
+          <input type="text" id="login-upi-input" class="form-input" placeholder="e.g. sharmadairy@upi or 9876500000@paytm" required autocomplete="off">
         </div>
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
