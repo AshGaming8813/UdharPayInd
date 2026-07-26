@@ -32,70 +32,78 @@
 
   <div class="app-container">
 
-    <!-- HEADER & TOP NAVIGATION -->
-    <header class="header">
-      <a href="#" class="brand-wrapper" id="brand-logo">
-        <div class="brand-icon" style="background: none; padding: 0; overflow: hidden;">
-          <!-- Generated Premium 3D Brand Logo -->
-          <img src="app_logo.png" alt="UdharPayInd Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);">
-        </div>
-        <div class="brand-text">
-          <h1>UdharPayInd</h1>
-          <span class="brand-tag">WhatsApp Auto-Billing</span>
-        </div>
-      </a>
+    <!-- STACKED HEADER & TOP NAVIGATION (2 SEPARATE BARS) -->
+    <div class="top-header-wrapper">
+      
+      <!-- BAR 1: BRAND LOGO & USER ACCOUNT -->
+      <div class="top-brand-bar">
+        <a href="#" class="brand-wrapper" id="brand-logo">
+          <div class="brand-icon" style="background: none; padding: 0; overflow: hidden;">
+            <!-- Generated Premium 3D Brand Logo -->
+            <img src="app_logo.png" alt="UdharPayInd Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);">
+          </div>
+          <div class="brand-text">
+            <h1>UdharPayInd</h1>
+            <span class="brand-tag">WhatsApp Auto-Billing</span>
+          </div>
+        </a>
 
-      <!-- Quick Search Bar -->
-      <div class="search-bar-container">
-        <svg class="search-icon" viewBox="0 0 24 24">
-          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/>
-        </svg>
-        <input type="text" id="global-search" class="search-input" placeholder="Search clients by Name, Phone, or Category (e.g. Milk, Ramesh)...">
-      </div>
-
-      <!-- Top Action Controls -->
-      <div class="header-actions">
-        
-        <!-- ANIMATED LOGGED-IN MERCHANT BADGE / LOGO (Replaces login button when logged in) -->
-        <div class="user-anime-badge" id="header-user-badge" title="Click to view profile or edit Merchant Name & PIN">
-          <div class="anime-avatar-glow" id="header-user-avatar">SD</div>
-          <div class="user-anime-info">
-            <div class="user-anime-name" id="header-user-name">Sharma Dairy</div>
-            <div class="user-anime-status">
-              <span class="pulse-dot"></span>
-              <span id="header-user-phone">9876500000</span>
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <!-- ANIMATED LOGGED-IN MERCHANT BADGE / LOGO -->
+          <div class="user-anime-badge" id="header-user-badge" title="Click to view profile or edit Merchant Name & PIN">
+            <div class="anime-avatar-glow" id="header-user-avatar">UP</div>
+            <div class="user-anime-info">
+              <div class="user-anime-name" id="header-user-name">Setup Merchant</div>
+              <div class="user-anime-status">
+                <span class="pulse-dot"></span>
+                <span id="header-user-phone">Account</span>
+              </div>
             </div>
           </div>
+
+          <!-- LOGIN BUTTON (Hidden when logged in) -->
+          <button class="btn btn-secondary" id="open-login-modal-btn" style="display: none;" title="Login or Register with Phone Number & PIN">
+            🔑 Login / Account
+          </button>
+
+          <button class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- BAR 2: SEARCH & SEPARATE ACTION BUTTONS BAR -->
+      <div class="action-controls-bar">
+        <!-- Quick Search Bar -->
+        <div class="search-bar-container">
+          <svg class="search-icon" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/>
+          </svg>
+          <input type="text" id="global-search" class="search-input" placeholder="Search clients by Name, Phone, or Category (e.g. Milk, Ramesh)...">
         </div>
 
-        <!-- PUSH NOTIFICATION REMINDER TRIGGER BUTTON (Phone & Laptop) -->
-        <button class="btn btn-secondary" id="enable-push-notifications-btn" title="Enable System Notifications on Phone & Laptop for approaching due dates">
-          🔔 Push Reminders
-        </button>
+        <div class="action-buttons-group">
+          <!-- PUSH NOTIFICATION REMINDER TRIGGER BUTTON (Phone & Laptop) -->
+          <button class="btn btn-secondary" id="enable-push-notifications-btn" title="Enable System Notifications on Phone & Laptop for approaching due dates">
+            🔔 Auto Push Reminders
+          </button>
 
-        <!-- LOGIN BUTTON (Hidden when logged in) -->
-        <button class="btn btn-secondary" id="open-login-modal-btn" style="display: none;" title="Login or Register with Phone Number & PIN">
-          🔑 Login / Account
-        </button>
+          <button class="btn btn-secondary" id="open-merchant-setup-btn" title="Configure WhatsApp Business Number & UPI ID">
+            ⚙️ Setup Business & UPI
+          </button>
 
-        <button class="btn btn-secondary" id="open-merchant-setup-btn" title="Configure WhatsApp Business Number & UPI ID">
-          ⚙️ Setup Business & UPI
-        </button>
-
-        <button class="btn btn-primary" id="open-add-client-modal">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-          </svg>
-          + Add Client / Udhar
-        </button>
-
-        <button class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/>
-          </svg>
-        </button>
+          <button class="btn btn-primary" id="open-add-client-modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            + Add Client / Udhar
+          </button>
+        </div>
       </div>
-    </header>
+
+    </div>
 
     <!-- ON-SCREEN DUE DATE ALERT BANNER (Phone & Laptop Screen Reminder) -->
     <div class="due-reminder-banner" id="due-reminder-alert-banner">
@@ -103,7 +111,7 @@
       <div class="due-banner-content">
         <div class="due-banner-title">
           <span>Payment Due Date Alert</span>
-          <span class="due-status-pill due-status-overdue" id="due-banner-badge">4 Pending</span>
+          <span class="due-status-pill due-status-overdue" id="due-banner-badge">0 Pending</span>
         </div>
         <div class="due-banner-sub" id="due-banner-text">
           Clients have payment due dates near or overdue! Send a WhatsApp reminder or trigger device notification.
@@ -131,9 +139,9 @@
             </svg>
           </div>
         </div>
-        <div class="metric-value" id="metric-total-udhar">₹48,500</div>
+        <div class="metric-value" id="metric-total-udhar">₹0</div>
         <div class="metric-footer">
-          <span class="trend-badge trend-alert">⚠️ 8 Pending Clients</span>
+          <span class="trend-badge trend-alert">⚠️ 0 Pending Clients</span>
           <span>across all services</span>
         </div>
       </div>
@@ -148,9 +156,9 @@
             </svg>
           </div>
         </div>
-        <div class="metric-value" id="metric-collected-month">₹1,12,000</div>
+        <div class="metric-value" id="metric-collected-month">₹0</div>
         <div class="metric-footer">
-          <span class="trend-badge trend-up">↑ 18.5%</span>
+          <span class="trend-badge trend-up">↑ 0%</span>
           <span>vs last month</span>
         </div>
       </div>
@@ -165,9 +173,9 @@
             </svg>
           </div>
         </div>
-        <div class="metric-value" id="metric-reminders-queued">14 Pending</div>
+        <div class="metric-value" id="metric-reminders-queued">0 Pending</div>
         <div class="metric-footer">
-          <span class="trend-badge trend-up">⏱ Next trigger: 9:00 AM</span>
+          <span class="trend-badge trend-up">⏱ Background Auto-Sync</span>
           <span>Device & WhatsApp Push</span>
         </div>
       </div>
@@ -182,7 +190,7 @@
             </svg>
           </div>
         </div>
-        <div class="metric-value" id="metric-overdue-clients">3 Overdue</div>
+        <div class="metric-value" id="metric-overdue-clients">0 Overdue</div>
         <div class="metric-footer">
           <span class="trend-badge trend-alert">Action Recommended</span>
           <span>Click to send urge text</span>
@@ -199,7 +207,7 @@
           <h2 class="card-heading">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--whatsapp-green)"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
             Active Clients & Udhar Ledger (Card View)
-            <span class="tab-count-badge" id="client-count-badge">8</span>
+            <span class="tab-count-badge" id="client-count-badge">0</span>
           </h2>
         </div>
 
@@ -320,9 +328,9 @@
               </div>
               <div class="wa-chat-body">
                 <div class="wa-chat-bubble" id="live-wa-preview-bubble">
-                  Namaste Ramesh ji! 🙏 Your Milk Supplier bill for July is ₹1,450.
+                  Namaste Client ji! 🙏 Your bill is ready.
 
-💳 Pay via UPI ID: sharmadairy@upi
+💳 Pay via UPI ID: merchant@upi
 
 📸 Please send a payment screenshot after paying for our records. Thank you!
                   <div class="wa-time-stamp">
@@ -373,7 +381,7 @@
 
               <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label class="form-label">Notes / Service Details</label>
-                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. 2L Daily Milk packet for July">
+                <input type="text" class="form-input" id="entry-notes" placeholder="e.g. Udhar Entry">
               </div>
 
               <button type="submit" class="btn btn-indigo" style="width: 100%;">
@@ -437,6 +445,58 @@
       </div>
     </footer>
 
+  </div>
+
+  <!-- MODAL 0: NEW USER ONBOARDING WELCOME POPUP MODAL -->
+  <div class="modal-overlay" id="onboarding-modal">
+    <div class="modal-card" style="max-width: 520px; border: 2px solid var(--whatsapp-green);">
+      <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.85rem;">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.6rem; color: var(--whatsapp-green); font-size: 1.25rem;">
+          👋 Welcome to UdharPayInd!
+        </h3>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.75rem; margin-bottom: 1.25rem; line-height: 1.5;">
+        Please tell us about yourself and your business to set up your fresh, clean ledger dashboard.
+      </p>
+
+      <form id="onboarding-form">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Merchant / Business Display Name *</label>
+          <input type="text" id="onboard-name" class="form-input" placeholder="e.g. Sharma Dairy & Provisions" required>
+        </div>
+
+        <div class="form-grid" style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Mobile Phone Number *</label>
+            <input type="tel" id="onboard-phone" class="form-input" placeholder="e.g. 9876500000" maxlength="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">4-Digit Security PIN *</label>
+            <input type="password" id="onboard-pin" class="form-input" placeholder="e.g. 1234" maxlength="4" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Merchant Primary UPI ID (To receive payments) *</label>
+          <input type="text" id="onboard-upi" class="form-input" placeholder="e.g. sharmadairy@upi or 9876500000@paytm" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Primary Service Category</label>
+          <select id="onboard-category" class="form-input">
+            <option value="Milk">🥛 Milk Supplier</option>
+            <option value="Grocery">🛒 Grocery Shop</option>
+            <option value="Tuition">📚 Tuition Class</option>
+            <option value="Rent">🏠 House Rent</option>
+            <option value="General">📦 General Shopkeeper / Services</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+          🚀 Save Setup & Start Clean Ledger
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- MODAL 1: ADD NEW CLIENT -->
@@ -551,7 +611,7 @@
         <div>
           <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Recipient Client:</div>
           <div style="font-size: 0.88rem; font-weight: 700;" id="wa-modal-recipient">
-            Ramesh Kumar
+            Client Name
           </div>
         </div>
       </div>

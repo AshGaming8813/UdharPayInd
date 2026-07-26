@@ -24,105 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const CURRENT_USER_KEY = 'udharpayind_active_user_phone';
   const LOGGED_IN_SESSION_KEY = 'udharpayind_is_logged_in';
 
-  // Initial Default Seed Data
-  const defaultClients = [
-    {
-      id: 'client-1',
-      name: 'Ramesh Kumar',
-      phone: '+91 98765 43210',
-      category: 'Milk',
-      amountDue: 1450,
-      billingFrequency: 'Monthly - 1st',
-      lastReminder: 'Today, 9:00 AM',
-      autoSend: true,
-      daysOverdue: 5
-    },
-    {
-      id: 'client-2',
-      name: 'Sunita Sharma',
-      phone: '+91 98123 45678',
-      category: 'Tuition',
-      amountDue: 4500,
-      billingFrequency: 'Monthly - 5th',
-      lastReminder: 'Yesterday',
-      autoSend: true,
-      daysOverdue: 20
-    },
-    {
-      id: 'client-3',
-      name: 'Vikram Singh',
-      phone: '+91 99887 76655',
-      category: 'Grocery',
-      amountDue: 8200,
-      billingFrequency: 'Custom Date',
-      lastReminder: '3 days ago',
-      autoSend: true,
-      daysOverdue: 35
-    },
-    {
-      id: 'client-4',
-      name: 'Anil Verma (Flat 302)',
-      phone: '+91 97654 32109',
-      category: 'Rent',
-      amountDue: 18000,
-      billingFrequency: 'Monthly - 1st',
-      lastReminder: 'Today, 9:00 AM',
-      autoSend: true,
-      daysOverdue: 2
-    },
-    {
-      id: 'client-5',
-      name: 'Pooja Gupta',
-      phone: '+91 91234 56789',
-      category: 'Milk',
-      amountDue: 980,
-      billingFrequency: 'Weekly - Sunday',
-      lastReminder: '2 days ago',
-      autoSend: false,
-      daysOverdue: 0
-    },
-    {
-      id: 'client-6',
-      name: 'Rajesh General Store',
-      phone: '+91 98989 89898',
-      category: 'Grocery',
-      amountDue: 12400,
-      billingFrequency: 'Monthly - 1st',
-      lastReminder: 'Today, 9:00 AM',
-      autoSend: true,
-      daysOverdue: 42
-    },
-    {
-      id: 'client-7',
-      name: 'Meena Saxena',
-      phone: '+91 95555 44433',
-      category: 'Tuition',
-      amountDue: 2980,
-      billingFrequency: 'Monthly - 5th',
-      lastReminder: '4 days ago',
-      autoSend: false,
-      daysOverdue: 10
-    },
-    {
-      id: 'client-8',
-      name: 'Suresh Patel (Shop #4)',
-      phone: '+91 93333 22211',
-      category: 'Rent',
-      amountDue: 0,
-      billingFrequency: 'Monthly - 1st',
-      lastReminder: '1 week ago',
-      autoSend: true,
-      daysOverdue: 0
-    }
-  ];
-
-  const defaultTransactions = [
-    { id: 'tx-100', clientName: 'Multiple Clients', type: 'credit', amount: 97000, date: '2026-07-01', notes: 'Monthly Udhar Collections Batch' },
-    { id: 'tx-101', clientName: 'Ramesh Kumar', type: 'debit', amount: 1450, date: '2026-07-24', notes: 'Daily Milk Delivery for July' },
-    { id: 'tx-102', clientName: 'Suresh Patel (Shop #4)', type: 'credit', amount: 15000, date: '2026-07-23', notes: 'July Rent Paid via UPI' },
-    { id: 'tx-103', clientName: 'Sunita Sharma', type: 'debit', amount: 2000, date: '2026-07-20', notes: 'Maths Tuition Fee Topup' },
-    { id: 'tx-104', clientName: 'Vikram Singh', type: 'credit', amount: 3000, date: '2026-07-18', notes: 'Partial Grocery Udhar Settlement' }
-  ];
+  // Initial Default Seed Data (Fresh Empty Database for New Users)
+  const defaultClients = [];
+  const defaultTransactions = [];
 
   const defaultTemplates = {
     monthly_bill: `Namaste {Client_Name} ji! 🙏\n\nYour {Service_Type} bill for {Month} is ₹{Amount}.\n\n💳 Pay via UPI ID: {UPI_ID}\n\n📸 Please send a payment screenshot after paying for our records.\n\nThank you for your prompt payment!\n- {Service_Type} Auto-Billing (UdharPayInd)`,
@@ -133,21 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const defaultMerchant = {
-    businessName: 'Sharma Dairy & Provisions',
-    businessPhone: '9876500000',
-    pin: '1234',
-    upiId: 'sharmadairy@upi',
+    businessName: '',
+    businessPhone: '',
+    pin: '',
+    upiId: '',
     defaultDispatch: 'direct',
-    phoneNumberId: '109823478912345',
-    accessToken: 'EAAG1234567890SAMPLETOKEN'
+    phoneNumberId: '',
+    accessToken: ''
   };
 
   // Active User & Login State
-  let activePhone = localStorage.getItem(CURRENT_USER_KEY) || '9876500000';
-  let isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) !== 'false';
-
-  localStorage.setItem(CURRENT_USER_KEY, activePhone);
-  localStorage.setItem(LOGGED_IN_SESSION_KEY, isLoggedIn ? 'true' : 'false');
+  let activePhone = localStorage.getItem(CURRENT_USER_KEY) || '';
+  let isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) === 'true';
 
   function getStorageKey(type) {
     return `udharpayind_${activePhone}_${type}`;
@@ -164,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedMerchant = JSON.parse(localStorage.getItem(getStorageKey('merchant')));
     const savedTemplates = JSON.parse(localStorage.getItem(getStorageKey('templates')));
 
-    state.clients = savedClients || defaultClients;
-    state.transactions = savedTransactions || defaultTransactions;
+    state.clients = savedClients || [];
+    state.transactions = savedTransactions || [];
     state.merchant = savedMerchant || { ...defaultMerchant, businessPhone: phone };
     state.templates = savedTemplates || defaultTemplates;
 
@@ -188,8 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
     currentDispatchClient: null
   };
 
+  function syncServiceWorkerAutoNotifications() {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'SCHEDULE_AUTO_NOTIFICATIONS',
+        clients: state.clients
+      });
+    }
+  }
+
   function saveClientsDB() {
     localStorage.setItem(getStorageKey('clients'), JSON.stringify(state.clients));
+    syncServiceWorkerAutoNotifications();
   }
 
   function saveTransactionsDB() {
@@ -204,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(getStorageKey('templates'), JSON.stringify(state.templates));
   }
 
-  loadAccountData(activePhone);
+  if (activePhone) {
+    loadAccountData(activePhone);
+  }
 
   // ==========================================
   // 2. DOM Elements
@@ -559,8 +472,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (filteredClients.length === 0) {
       clientCardsGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
-          🔍 No clients found matching the selected filter or search query.
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 2rem; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--whatsapp-green);">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">✨</div>
+          <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            Clean & Fresh Ledger
+          </div>
+          <div style="font-size: 0.88rem; max-width: 480px; margin: 0 auto 1.25rem auto; color: var(--text-secondary);">
+            No client records found. Click "+ Add Client / Udhar" to record your first customer.
+          </div>
+          <button class="btn btn-primary" onclick="document.getElementById('open-add-client-modal').click()">
+            + Add First Client
+          </button>
         </div>
       `;
       return;
@@ -1128,7 +1050,63 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Onboarding Setup Popup Modal Elements
+  const onboardingModal = document.getElementById('onboarding-modal');
+  const onboardingForm = document.getElementById('onboarding-form');
+  const onboardNameInput = document.getElementById('onboard-name');
+  const onboardPhoneInput = document.getElementById('onboard-phone');
+  const onboardPinInput = document.getElementById('onboard-pin');
+  const onboardUpiInput = document.getElementById('onboard-upi');
+  const onboardCategorySelect = document.getElementById('onboard-category');
+
+  function checkFirstLaunchOnboarding() {
+    if (!activePhone || !state.merchant.businessName) {
+      if (onboardingModal) onboardingModal.classList.add('active');
+    } else {
+      if (onboardingModal) onboardingModal.classList.remove('active');
+    }
+  }
+
+  if (onboardingForm) {
+    onboardingForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = onboardNameInput.value.trim();
+      const phone = onboardPhoneInput.value.trim();
+      const pin = onboardPinInput.value.trim();
+      const upi = onboardUpiInput.value.trim();
+
+      if (!name || phone.length < 10 || pin.length !== 4 || !upi) {
+        alert('Please fill out all setup fields properly (Phone must be 10 digits & PIN must be 4 digits).');
+        return;
+      }
+
+      loadAccountData(phone);
+      state.merchant.businessName = name;
+      state.merchant.businessPhone = phone;
+      state.merchant.pin = pin;
+      state.merchant.upiId = upi;
+      state.merchant.category = onboardCategorySelect.value;
+      saveMerchantDB();
+
+      updateMerchantHeaderDisplay();
+      updateTemplateEditorAndPreview();
+      updateMetrics();
+      renderLedgerTable();
+      populateEntryClientDropdown();
+      renderTransactionHistory();
+
+      if (onboardingModal) onboardingModal.classList.remove('active');
+      showToast(`Welcome ${name}! Your fresh ledger is ready. Add your first client!`, 'success');
+
+      // Ask for push notification permission on setup
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
+    });
+  }
+
   // Boot Setup
+  checkFirstLaunchOnboarding();
   updateMerchantHeaderDisplay();
   templateEditor.value = state.templates.monthly_bill;
   updateTemplateEditorAndPreview();
@@ -1137,4 +1115,5 @@ document.addEventListener('DOMContentLoaded', () => {
   populateEntryClientDropdown();
   renderTransactionHistory();
   checkAndShowDueAlertBanner();
+  syncServiceWorkerAutoNotifications();
 });
