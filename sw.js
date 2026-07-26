@@ -2,7 +2,7 @@
    UdharPayInd Service Worker (PWABuilder 100% Compliant & Network-First Fresh Assets)
    ========================================================================== */
 
-const CACHE_NAME = 'udharpayind-v5';
+const CACHE_NAME = 'udharpayind-v6';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

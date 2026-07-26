@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Active User & Login State
-  let activePhone = localStorage.getItem(CURRENT_USER_KEY) || '';
+  let activePhone = localStorage.getItem(CURRENT_USER_KEY) || 'local_merchant';
   let isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) === 'true';
 
   function getStorageKey(type) {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function loadAccountData(phone) {
-    activePhone = phone;
+    activePhone = phone || 'local_merchant';
     isLoggedIn = true;
     localStorage.setItem(CURRENT_USER_KEY, activePhone);
     localStorage.setItem(LOGGED_IN_SESSION_KEY, 'true');
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     state.clients = savedClients || [];
     state.transactions = savedTransactions || [];
-    state.merchant = savedMerchant || { ...defaultMerchant, businessPhone: phone };
+    state.merchant = savedMerchant || { ...defaultMerchant, businessPhone: activePhone };
     state.templates = savedTemplates || defaultTemplates;
 
     if (!savedClients) saveClientsDB();
@@ -76,48 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!savedTemplates) saveTemplatesDB();
   }
 
-  const state = {
-    clients: [],
-    transactions: [],
-    merchant: { ...defaultMerchant },
-    templates: { ...defaultTemplates },
-
-    activeCategoryFilter: 'all',
-    activeStatusFilter: 'all',
-    searchQuery: '',
-    selectedTemplateKey: 'monthly_bill',
-    currentDispatchClient: null
-  };
-
-  function syncServiceWorkerAutoNotifications() {
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'SCHEDULE_AUTO_NOTIFICATIONS',
-        clients: state.clients
-      });
-    }
-  }
-
-  function saveClientsDB() {
-    localStorage.setItem(getStorageKey('clients'), JSON.stringify(state.clients));
-    syncServiceWorkerAutoNotifications();
-  }
-
-  function saveTransactionsDB() {
-    localStorage.setItem(getStorageKey('transactions'), JSON.stringify(state.transactions));
-  }
-
-  function saveMerchantDB() {
-    localStorage.setItem(getStorageKey('merchant'), JSON.stringify(state.merchant));
-  }
-
-  function saveTemplatesDB() {
-    localStorage.setItem(getStorageKey('templates'), JSON.stringify(state.templates));
-  }
-
-  if (activePhone) {
-    loadAccountData(activePhone);
-  }
+  // ALWAYS load persistent account data on boot
+  loadAccountData(activePhone);
 
   // ==========================================
   // 2. DOM Elements
@@ -205,30 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const merchantPhoneNumberIdInput = document.getElementById('merchant-phone-number-id');
   const merchantAccessTokenInput = document.getElementById('merchant-access-token');
 
-  // Force purge legacy test data (e.g. Dairy Go, 8813911566, Sharma Dairy, 9876500000, Ramesh Kumar)
-  function purgeLegacyDemoData() {
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const key = localStorage.key(i);
-      if (key && (key.startsWith('udharpayind_') || key === CURRENT_USER_KEY || key === LOGGED_IN_SESSION_KEY)) {
-        try {
-          const raw = localStorage.getItem(key) || '';
-          if (raw.includes('Dairy Go') || raw.includes('8813911566') || raw.includes('Sharma Dairy') || raw.includes('9876500000') || raw.includes('Ramesh Kumar')) {
-            localStorage.removeItem(key);
-          }
-        } catch (e) {}
-      }
-    }
-  }
-  purgeLegacyDemoData();
-
-  // Active User & Login State (Defaults to unauthenticated for maximum security)
-  activePhone = localStorage.getItem(CURRENT_USER_KEY) || '';
-  isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) === 'true' && activePhone !== '' && activePhone !== '8813911566' && activePhone !== '9876500000';
-
-  if (!isLoggedIn) {
-    activePhone = '';
-    localStorage.removeItem(CURRENT_USER_KEY);
-    localStorage.setItem(LOGGED_IN_SESSION_KEY, 'false');
+  // Ensure user session persistence
+  if (!activePhone) {
+    activePhone = 'local_merchant';
+    localStorage.setItem(CURRENT_USER_KEY, activePhone);
   }
 
   // Login Modal Elements
