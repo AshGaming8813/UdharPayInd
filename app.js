@@ -251,6 +251,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 3. Helper & Format Functions
   // ==========================================
+  // Mobile Touch & Click Helper
+  function addTapListener(element, callback) {
+    if (!element) return;
+    let touchHandled = false;
+
+    element.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      touchHandled = true;
+      callback(e);
+      setTimeout(() => { touchHandled = false; }, 400);
+    }, { passive: false });
+
+    element.addEventListener('click', (e) => {
+      if (!touchHandled) {
+        callback(e);
+      }
+    });
+  }
+
   function formatCurrency(amount) {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -456,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. MOBILE BOTTOM NAVIGATION SWITCHER
   // ==========================================
   mobileNavButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    addTapListener(btn, () => {
       const targetId = btn.getAttribute('data-target');
 
       // 1. Highlight clicked nav button
@@ -571,25 +590,24 @@ document.addEventListener('DOMContentLoaded', () => {
       clientCardsGrid.appendChild(card);
     });
 
-    // Attach Event Listeners to Card Buttons
-
+    // Attach Event Listeners to Card Buttons (Mobile Touch & PC Click Compliant)
     document.querySelectorAll('.trigger-wa-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+      addTapListener(btn, (e) => {
+        const id = btn.getAttribute('data-id');
         openWhatsAppModal(id);
       });
     });
 
     document.querySelectorAll('.trigger-settle-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+      addTapListener(btn, (e) => {
+        const id = btn.getAttribute('data-id');
         openSettleModal(id);
       });
     });
 
     document.querySelectorAll('.trigger-delete-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+      addTapListener(btn, (e) => {
+        const id = btn.getAttribute('data-id');
         const client = state.clients.find(c => c.id === id);
         if (client) {
           if (confirm(`Are you sure you want to remove client "${client.name}" from your ledger?`)) {
@@ -664,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
   templateEditor.addEventListener('input', () => updateTemplateEditorAndPreview());
 
   varChips.forEach(chip => {
-    chip.addEventListener('click', () => {
+    addTapListener(chip, () => {
       const varTag = chip.getAttribute('data-var');
       const start = templateEditor.selectionStart;
       const end = templateEditor.selectionEnd;
@@ -678,15 +696,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  saveTemplateBtn.addEventListener('click', () => {
-    state.templates[state.selectedTemplateKey] = templateEditor.value;
-    saveTemplatesDB(); // PERSIST
-    showToast('WhatsApp Template saved to database!', 'success');
-  });
+  if (saveTemplateBtn) {
+    addTapListener(saveTemplateBtn, () => {
+      state.templates[state.selectedTemplateKey] = templateEditor.value;
+      saveTemplatesDB(); // PERSIST
+      showToast('WhatsApp Template saved to database!', 'success');
+    });
+  }
 
-  testDispatchBtn.addEventListener('click', () => {
-    openWhatsAppModal(state.clients[0].id);
-  });
+  if (testDispatchBtn) {
+    addTapListener(testDispatchBtn, () => {
+      if (state.clients.length > 0) {
+        openWhatsAppModal(state.clients[0].id);
+      } else {
+        showToast('Add a client record first to test WhatsApp dispatch!', 'info');
+      }
+    });
+  }
 
   // ==========================================
   // 8. REAL WHATSAPP DISPATCH MODAL WITH INLINE EDITING & SCROLLBAR
@@ -860,13 +886,13 @@ document.addEventListener('DOMContentLoaded', () => {
     settleModal.classList.add('active');
   }
 
-  closeAddModalBtn.addEventListener('click', () => addClientModal.classList.remove('active'));
-  cancelAddModalBtn.addEventListener('click', () => addClientModal.classList.remove('active'));
-  closeSettleModalBtn.addEventListener('click', () => settleModal.classList.remove('active'));
-  cancelSettleModalBtn.addEventListener('click', () => settleModal.classList.remove('active'));
-  closeWaModalBtn.addEventListener('click', () => waModal.classList.remove('active'));
-  cancelWaModalBtn.addEventListener('click', () => waModal.classList.remove('active'));
-  openAddClientModalBtn.addEventListener('click', () => addClientModal.classList.add('active'));
+  if (closeAddModalBtn) addTapListener(closeAddModalBtn, () => addClientModal.classList.remove('active'));
+  if (cancelAddModalBtn) addTapListener(cancelAddModalBtn, () => addClientModal.classList.remove('active'));
+  if (closeSettleModalBtn) addTapListener(closeSettleModalBtn, () => settleModal.classList.remove('active'));
+  if (cancelSettleModalBtn) addTapListener(cancelSettleModalBtn, () => settleModal.classList.remove('active'));
+  if (closeWaModalBtn) addTapListener(closeWaModalBtn, () => waModal.classList.remove('active'));
+  if (cancelWaModalBtn) addTapListener(cancelWaModalBtn, () => waModal.classList.remove('active'));
+  if (openAddClientModalBtn) addTapListener(openAddClientModalBtn, () => addClientModal.classList.add('active'));
 
   // ADD NEW CLIENT FORM SUBMIT -> SAVES PERSISTENTLY
   addClientForm.addEventListener('submit', (e) => {
@@ -952,7 +978,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   categoryChips.forEach(chip => {
-    chip.addEventListener('click', () => {
+    addTapListener(chip, () => {
       categoryChips.forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       state.activeCategoryFilter = chip.getAttribute('data-category');
@@ -970,13 +996,13 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLedgerTable();
   });
 
-  btnTypeDebit.addEventListener('click', () => {
+  addTapListener(btnTypeDebit, () => {
     btnTypeDebit.classList.add('active');
     btnTypeCredit.classList.remove('active');
     currentEntryType = 'debit';
   });
 
-  btnTypeCredit.addEventListener('click', () => {
+  addTapListener(btnTypeCredit, () => {
     btnTypeCredit.classList.add('active');
     btnTypeDebit.classList.remove('active');
     currentEntryType = 'credit';

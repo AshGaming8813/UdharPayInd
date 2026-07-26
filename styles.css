@@ -1165,9 +1165,10 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* CRITICAL FOR MOBILE PHONES: Allows touch taps to pass through when closed */
   transition: var(--transition);
   padding: 1rem;
 }
@@ -1175,6 +1176,7 @@ input:checked + .slider:before {
 .modal-overlay.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto; /* CRITICAL FOR MOBILE PHONES: Captures touches when modal is open */
 }
 
 .modal-card {
