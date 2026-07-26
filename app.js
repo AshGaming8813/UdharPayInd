@@ -390,6 +390,91 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function getDueStatusPillHTML(client) {
+    if (client.amountDue <= 0) {
+      return `<span class="due-status-pill due-status-ok">✅ Paid</span>`;
+    }
+    if (client.daysOverdue > 15) {
+      return `<span class="due-status-pill due-status-overdue">🔴 ${client.daysOverdue}d Overdue</span>`;
+    }
+    return `<span class="due-status-pill due-status-near">⏰ Due Soon</span>`;
+  }
+
+  function checkAndShowDueAlertBanner() {
+    const pendingClients = state.clients.filter(c => c.amountDue > 0);
+    const totalPendingAmt = pendingClients.reduce((sum, c) => sum + c.amountDue, 0);
+
+    if (pendingClients.length === 0) {
+      if (dueReminderAlertBanner) dueReminderAlertBanner.style.display = 'none';
+      return;
+    }
+
+    if (dueReminderAlertBanner) dueReminderAlertBanner.style.display = 'flex';
+    if (dueBannerBadge) dueBannerBadge.textContent = `${pendingClients.length} Due Pending`;
+    if (dueBannerText) {
+      dueBannerText.textContent = `${pendingClients.length} clients have payment due dates near or overdue (${formatCurrency(totalPendingAmt)} Total Due). Trigger device notification or send WhatsApp reminders!`;
+    }
+  }
+
+  function sendDevicePushNotification(title, body) {
+    if (!('Notification' in window)) {
+      showToast('System Notifications not supported on this device/browser.', 'info');
+      return;
+    }
+
+    if (Notification.permission === 'granted') {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(reg => {
+          reg.showNotification(title, {
+            body: body,
+            icon: 'icon-192.png',
+            badge: 'icon-192.png',
+            vibrate: [200, 100, 200, 100, 200],
+            tag: 'udharpayind-due-reminder',
+            renotify: true
+          });
+        });
+      } else {
+        new Notification(title, {
+          body: body,
+          icon: 'icon-192.png'
+        });
+      }
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          sendDevicePushNotification(title, body);
+        }
+      });
+    }
+  }
+
+  function triggerAllDueNotifications() {
+    const pendingClients = state.clients.filter(c => c.amountDue > 0);
+    if (pendingClients.length === 0) {
+      showToast('No pending payment due dates found!', 'info');
+      return;
+    }
+
+    const firstClient = pendingClients[0];
+    const title = `🔔 UdharPayInd Due Date Alert!`;
+    const body = `${pendingClients.length} client(s) have upcoming bills! (e.g. ${firstClient.name} - ${formatCurrency(firstClient.amountDue)} due for ${firstClient.category}). Tap to open dashboard.`;
+
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          sendDevicePushNotification(title, body);
+          showToast('🔔 Phone & Laptop System Push Notifications Enabled!', 'success');
+        } else {
+          showToast('Notification permission denied by user.', 'warning');
+        }
+      });
+    } else {
+      sendDevicePushNotification(title, body);
+      showToast(`🔔 Sent System Notification for ${pendingClients.length} pending due dates!`, 'success');
+    }
+  }
+
   function processTemplateVariables(templateStr, client = null) {
     const targetName = client ? client.name : 'Ramesh Kumar';
     const targetAmount = client ? formatCurrency(client.amountDue) : '₹1,450';
@@ -416,13 +501,15 @@ document.addEventListener('DOMContentLoaded', () => {
       .filter(t => t.type === 'credit')
       .reduce((acc, t) => acc + (t.amount || 0), 0);
     const overdueCount = state.clients.filter(c => c.daysOverdue > 15 && c.amountDue > 0).length;
-    const queuedCount = state.clients.filter(c => c.autoSend && c.amountDue > 0).length;
+    const queuedCount = state.clients.filter(c => c.amountDue > 0).length;
 
     metricTotalUdhar.textContent = formatCurrency(totalDue);
     metricCollectedMonth.textContent = formatCurrency(totalCollected);
     metricOverdueClients.textContent = `${overdueCount} Overdue`;
     metricRemindersQueued.textContent = `${queuedCount} Pending`;
     clientCountBadge.textContent = state.clients.length;
+
+    checkAndShowDueAlertBanner();
   }
 
   // ==========================================
@@ -458,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filteredClients = state.clients.filter(client => {
       if (state.activeCategoryFilter !== 'all' && client.category !== state.activeCategoryFilter) return false;
       if (state.activeStatusFilter === 'overdue' && (client.daysOverdue <= 15 || client.amountDue <= 0)) return false;
-      if (state.activeStatusFilter === 'active' && !client.autoSend) return false;
+      if (state.activeStatusFilter === 'due_soon' && client.amountDue <= 0) return false;
       if (state.activeStatusFilter === 'paid' && client.amountDue > 0) return false;
       if (state.searchQuery.trim() !== '') {
         const query = state.searchQuery.toLowerCase();
@@ -513,12 +600,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="card-meta-val" style="font-size: 0.78rem; color: var(--text-muted);">${client.lastReminder}</span>
           </div>
           <div class="card-meta-item">
-            <span class="card-meta-label">Auto-WhatsApp</span>
+            <span class="card-meta-label">Due Status</span>
             <div style="margin-top: 4px;">
-              <label class="toggle-switch">
-                <input type="checkbox" class="auto-send-toggle" data-id="${client.id}" ${client.autoSend ? 'checked' : ''}>
-                <span class="slider"></span>
-              </label>
+              ${getDueStatusPillHTML(client)}
             </div>
           </div>
         </div>
@@ -539,18 +623,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Attach Event Listeners to Card Buttons
-    document.querySelectorAll('.auto-send-toggle').forEach(checkbox => {
-      checkbox.addEventListener('change', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const client = state.clients.find(c => c.id === id);
-        if (client) {
-          client.autoSend = e.target.checked;
-          saveClientsDB(); // PERSIST
-          showToast(`WhatsApp Auto-Send ${client.autoSend ? 'Enabled' : 'Paused'} for ${client.name}`, client.autoSend ? 'success' : 'info');
-          updateMetrics();
-        }
-      });
-    });
 
     document.querySelectorAll('.trigger-wa-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -1035,6 +1107,27 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast(`Switched to ${newTheme.toUpperCase()} theme`, 'info');
   });
 
+  // System Push Notification Buttons & Banner Event Listeners
+  const enablePushNotificationsBtn = document.getElementById('enable-push-notifications-btn');
+  const dueReminderAlertBanner = document.getElementById('due-reminder-alert-banner');
+  const dueBannerBadge = document.getElementById('due-banner-badge');
+  const dueBannerText = document.getElementById('due-banner-text');
+  const triggerDeviceNotificationBtn = document.getElementById('trigger-device-notification-btn');
+  const dismissDueBannerBtn = document.getElementById('dismiss-due-banner-btn');
+
+  if (enablePushNotificationsBtn) {
+    enablePushNotificationsBtn.addEventListener('click', triggerAllDueNotifications);
+  }
+  if (triggerDeviceNotificationBtn) {
+    triggerDeviceNotificationBtn.addEventListener('click', triggerAllDueNotifications);
+  }
+  if (dismissDueBannerBtn) {
+    dismissDueBannerBtn.addEventListener('click', () => {
+      if (dueReminderAlertBanner) dueReminderAlertBanner.style.display = 'none';
+      showToast('Due Alert Banner dismissed.', 'info');
+    });
+  }
+
   // Boot Setup
   updateMerchantHeaderDisplay();
   templateEditor.value = state.templates.monthly_bill;
@@ -1043,4 +1136,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderLedgerTable();
   populateEntryClientDropdown();
   renderTransactionHistory();
+  checkAndShowDueAlertBanner();
 });

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UdharPayInd Service Worker (PWABuilder 100% Compliant)
+   UdharPayInd Service Worker (PWABuilder 100% Compliant & Push Notifications)
    ========================================================================== */
 
 const CACHE_NAME = 'udharpayind-v1';
@@ -69,6 +69,23 @@ self.addEventListener('fetch', (event) => {
         });
         return response;
       });
+    })
+  );
+});
+
+// Notification Click Event (Brings app to focus on phone/laptop when notification is tapped)
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (let client of clientList) {
+        if (client.url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('/');
+      }
     })
   );
 });
