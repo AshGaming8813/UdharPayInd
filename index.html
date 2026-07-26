@@ -11,18 +11,25 @@
   <meta name="description" content="Sleek, automated billing and WhatsApp reminder web dashboard for small merchants, milk suppliers, shopkeepers, tuition teachers, and landlords.">
   <link rel="icon" type="image/png" href="app_logo.png">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css?v=5.0">
+  <link rel="stylesheet" href="styles.css?v=7.0">
 
-  <!-- INLINE SERVICE WORKER REGISTRATION (PWABuilder Instant Detection) -->
+  <!-- INLINE SERVICE WORKER & FORCE CACHE FLUSHER FOR MOBILE & VERCEL -->
   <script>
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        for (let name of names) {
+          if (name !== 'udharpayind-v7') {
+            caches.delete(name);
+          }
+        }
+      });
+    }
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        navigator.serviceWorker.register('/sw.js?v=7.0', { scope: '/' })
           .then(function(registration) {
-            console.log('✅ PWA Service Worker Registered (Scope: ' + registration.scope + ')');
-          })
-          .catch(function(error) {
-            console.error('⚠️ PWA Service Worker Registration Failed:', error);
+            registration.update();
+            console.log('✅ PWA Service Worker Updated & Active');
           });
       });
     }
@@ -708,6 +715,6 @@
   <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toast-container"></div>
 
-  <script src="app.js?v=6.0"></script>
+  <script src="app.js?v=7.0"></script>
 </body>
 </html>
