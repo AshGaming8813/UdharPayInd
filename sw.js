@@ -1,8 +1,8 @@
 /* ==========================================================================
-   UdharPayInd Service Worker (PWABuilder 100% Compliant & Auto Background Push)
+   UdharPayInd Service Worker (PWABuilder 100% Compliant & Network-First Fresh Assets)
    ========================================================================== */
 
-const CACHE_NAME = 'udharpayind-v1';
+const CACHE_NAME = 'udharpayind-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -24,7 +24,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate Event
+// Activate Event - Immediately purges legacy caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -40,35 +40,34 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event - Handles Navigation & Offline Fallback for PWABuilder
+// Fetch Event - Network-First for JS and CSS files to guarantee fresh code loads immediately
 self.addEventListener('fetch', (event) => {
-  // Only handle HTTP/HTTPS requests
   if (!event.request.url.startsWith('http')) return;
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/index.html');
-      })
+      fetch(event.request).catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
+  // Network-First for JS and CSS
+  if (event.request.url.includes('.js') || event.request.url.includes('.css')) {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      }).catch(() => caches.match(event.request))
     );
     return;
   }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return response;
-      });
+      return cachedResponse || fetch(event.request);
     })
   );
 });
@@ -90,12 +89,10 @@ self.addEventListener('message', (event) => {
 function scheduleAutomaticBackgroundNotifications() {
   if (autoNotificationTimer) clearInterval(autoNotificationTimer);
 
-  // Check every 30 minutes in background automatically
   autoNotificationTimer = setInterval(() => {
     triggerBackgroundDueNotifications();
   }, 30 * 60 * 1000);
 
-  // Initial trigger check after 5 seconds
   setTimeout(() => {
     triggerBackgroundDueNotifications();
   }, 5000);
@@ -120,7 +117,7 @@ function triggerBackgroundDueNotifications() {
   });
 }
 
-// Notification Click Event (Brings app to focus on phone/laptop when notification is tapped)
+// Notification Click Event
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(

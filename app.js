@@ -79,8 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const state = {
     clients: [],
     transactions: [],
-    merchant: {},
-    templates: {},
+    merchant: { ...defaultMerchant },
+    templates: { ...defaultTemplates },
 
     activeCategoryFilter: 'all',
     activeStatusFilter: 'all',
@@ -423,11 +423,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function processTemplateVariables(templateStr, client = null) {
-    const targetName = client ? client.name : 'Ramesh Kumar';
-    const targetAmount = client ? formatCurrency(client.amountDue) : '₹1,450';
-    const targetService = client ? getCategoryIcon(client.category) : 'Milk Supplier';
+    if (!templateStr || typeof templateStr !== 'string') {
+      templateStr = defaultTemplates.monthly_bill;
+    }
+    const targetName = client ? client.name : 'Customer';
+    const targetAmount = client ? formatCurrency(client.amountDue) : '₹0';
+    const targetService = client ? getCategoryIcon(client.category) : 'Service';
     const targetDueDate = '1st of Month';
-    const targetUpiId = state.merchant.upiId || 'sharmadairy@upi';
+    const targetUpiId = (state.merchant && state.merchant.upiId) ? state.merchant.upiId : 'merchant@upi';
     const targetMonth = 'July';
 
     return templateStr
@@ -1211,7 +1214,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Boot Setup
   checkFirstLaunchOnboarding();
   updateMerchantHeaderDisplay();
-  templateEditor.value = state.templates.monthly_bill;
+  if (templateEditor) {
+    templateEditor.value = (state.templates && state.templates.monthly_bill) || defaultTemplates.monthly_bill;
+  }
   updateTemplateEditorAndPreview();
   updateMetrics();
   renderCategoryFilterChips();
