@@ -205,14 +205,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const merchantPhoneNumberIdInput = document.getElementById('merchant-phone-number-id');
   const merchantAccessTokenInput = document.getElementById('merchant-access-token');
 
-  // Force purge legacy demo data so new/fresh app sessions start with ZERO demo clients
+  // Force purge legacy test data (e.g. Dairy Go, 8813911566, Sharma Dairy, 9876500000, Ramesh Kumar)
   function purgeLegacyDemoData() {
-    for (let i = 0; i < localStorage.length; i++) {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
       const key = localStorage.key(i);
-      if (key && key.startsWith('udharpayind_')) {
+      if (key && (key.startsWith('udharpayind_') || key === CURRENT_USER_KEY || key === LOGGED_IN_SESSION_KEY)) {
         try {
-          const val = JSON.parse(localStorage.getItem(key));
-          if (Array.isArray(val) && val.some(c => c && c.name === 'Ramesh Kumar')) {
+          const raw = localStorage.getItem(key) || '';
+          if (raw.includes('Dairy Go') || raw.includes('8813911566') || raw.includes('Sharma Dairy') || raw.includes('9876500000') || raw.includes('Ramesh Kumar')) {
             localStorage.removeItem(key);
           }
         } catch (e) {}
@@ -220,6 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   purgeLegacyDemoData();
+
+  // Active User & Login State (Defaults to unauthenticated for maximum security)
+  let activePhone = localStorage.getItem(CURRENT_USER_KEY) || '';
+  let isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) === 'true' && activePhone !== '' && activePhone !== '8813911566' && activePhone !== '9876500000';
+
+  if (!isLoggedIn) {
+    activePhone = '';
+    localStorage.removeItem(CURRENT_USER_KEY);
+    localStorage.setItem(LOGGED_IN_SESSION_KEY, 'false');
+  }
 
   // Login Modal Elements
   const loginAccountModal = document.getElementById('login-account-modal');
@@ -768,10 +778,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // 9. UNIFIED MERCHANT LOGIN & ACCOUNT SETUP WORKFLOW
   // ==========================================
   function openLoginModal() {
-    loginNameInput.value = state.merchant.businessName || '';
-    loginPhoneInput.value = state.merchant.businessPhone || activePhone || '';
-    loginPinInput.value = state.merchant.pin || '';
-    if (loginUpiInput) loginUpiInput.value = state.merchant.upiId || '';
+    // SECURITY GUARANTEE: Never pre-fill sensitive merchant credentials on screen!
+    loginNameInput.value = '';
+    loginPhoneInput.value = '';
+    loginPinInput.value = '';
+    if (loginUpiInput) loginUpiInput.value = '';
     loginAccountModal.classList.add('active');
   }
 
@@ -1040,6 +1051,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const onboardCategorySelect = document.getElementById('onboard-category');
 
   function checkFirstLaunchOnboarding() {
+    if (onboardNameInput) onboardNameInput.value = '';
+    if (onboardPhoneInput) onboardPhoneInput.value = '';
+    if (onboardPinInput) onboardPinInput.value = '';
+    if (onboardUpiInput) onboardUpiInput.value = '';
+
     if (!activePhone || !state.merchant.businessName) {
       if (onboardingModal) onboardingModal.classList.add('active');
     } else {
