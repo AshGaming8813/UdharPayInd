@@ -11,7 +11,7 @@
   <meta name="description" content="Sleek, automated billing and WhatsApp reminder web dashboard for small merchants, milk suppliers, shopkeepers, tuition teachers, and landlords.">
   <link rel="icon" type="image/png" href="app_logo.png">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=5.0">
 
   <!-- INLINE SERVICE WORKER REGISTRATION (PWABuilder Instant Detection) -->
   <script>
@@ -48,7 +48,7 @@
           </div>
         </a>
 
-        <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
           <!-- ANIMATED LOGGED-IN MERCHANT BADGE / LOGO -->
           <div class="user-anime-badge" id="header-user-badge" title="Click to view profile or edit Merchant Name & PIN">
             <div class="anime-avatar-glow" id="header-user-avatar">UP</div>
@@ -63,7 +63,7 @@
 
           <!-- LOGIN BUTTON (Hidden when logged in) -->
           <button class="btn btn-secondary" id="open-login-modal-btn" style="display: none;" title="Login or Register with Phone Number & PIN">
-            🔑 Login / Account
+            🔑 Login
           </button>
 
           <button class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
@@ -708,6 +708,6 @@
   <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toast-container"></div>
 
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=5.0"></script>
 </body>
 </html>
