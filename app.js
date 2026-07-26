@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
   purgeLegacyDemoData();
 
   // Active User & Login State (Defaults to unauthenticated for maximum security)
-  let activePhone = localStorage.getItem(CURRENT_USER_KEY) || '';
-  let isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) === 'true' && activePhone !== '' && activePhone !== '8813911566' && activePhone !== '9876500000';
+  activePhone = localStorage.getItem(CURRENT_USER_KEY) || '';
+  isLoggedIn = localStorage.getItem(LOGGED_IN_SESSION_KEY) === 'true' && activePhone !== '' && activePhone !== '8813911566' && activePhone !== '9876500000';
 
   if (!isLoggedIn) {
     activePhone = '';
@@ -1106,7 +1106,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Custom Category Input Toggle Listeners
   const newClientCategorySelect = document.getElementById('new-client-category');
   const newClientCustomWrap = document.getElementById('new-client-custom-wrap');
-  const onboardCategorySelect = document.getElementById('onboard-category');
   const onboardCustomWrap = document.getElementById('onboard-custom-wrap');
 
   if (newClientCategorySelect) {
