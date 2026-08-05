@@ -1162,21 +1162,22 @@ input:checked + .slider:before {
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(11, 15, 25, 0.85);
   backdrop-filter: blur(10px);
-  display: flex;
+  display: none; /* Reliable across all browsers & mobile devices */
   align-items: center;
   justify-content: center;
   z-index: 2000;
   opacity: 0;
   visibility: hidden;
-  pointer-events: none; /* CRITICAL FOR MOBILE PHONES: Allows touch taps to pass through when closed */
+  pointer-events: none;
   transition: var(--transition);
   padding: 1rem;
 }
 
 .modal-overlay.active {
+  display: flex !important;
   opacity: 1;
   visibility: visible;
-  pointer-events: auto; /* CRITICAL FOR MOBILE PHONES: Captures touches when modal is open */
+  pointer-events: auto;
 }
 
 .modal-card {
